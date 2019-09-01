@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./app.js"
+    "start": "nodemon --inspect ./app.js"
   },
   "repository": {
     "type": "git",
@@ -33,6 +33,7 @@
     "lodash": "^4.17.15",
     "mysql": "^2.17.1",
     "mysql2": "^1.7.0",
+    "nodemon": "^1.19.1",
     "sequelize": "^5.18.0",
     "sudo": "^1.0.3"
   }
