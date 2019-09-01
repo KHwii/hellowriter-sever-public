@@ -1,5 +1,5 @@
 const Sequelize = require ('sequelize');
-const secret = require ('config/secret');
+const secret = require ('./config/secret');
 
 const sequelize = new Sequelize(
     global.gConfig.database,
@@ -10,6 +10,7 @@ const sequelize = new Sequelize(
       'dialect': 'mysql'
     }
 );
+
 sequelize
     .authenticate()
     .then(() => {
@@ -19,4 +20,4 @@ sequelize
       console.error('Unable to connect to the database:', err);
     });
 
-export default sequelize;
+module.exports = sequelize;
