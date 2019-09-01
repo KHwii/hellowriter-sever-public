@@ -3,7 +3,8 @@
     "config_id": "development",
     "app_name": "helloWriter_dev",
     "app_desc": "helloWriter's DB_dev",
-    "node_port": 3306,
+    "node_port": 5000,
+    "db_port": 3306,
     "json_indentation": 4,
     "database": "Hello_Writer_DB_Dev"
   },
@@ -14,6 +15,7 @@
   "staging": {
     "config_id": "staging",
     "node_port": 8080,
+    "db_port": 3306,
     "database": "my-app-db-stag"
   },
   "production": {
