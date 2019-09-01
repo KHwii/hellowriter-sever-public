@@ -2,7 +2,7 @@ const Sequelize = require ('sequelize');
 const sequelize = require('./db');
 const crypto = require('crypto');
 
-module.exports = sequelize.define('user',{
+module.exports.User = sequelize.define('user',{
   id: {
     type:Sequelize.INTEGER,
     primaryKey: true,
