@@ -2,7 +2,7 @@ const Sequelize = require ('sequelize');
 const sequelize = require('./db');
 const crypto = require('crypto');
 
-module.exports.users = sequelize.define('user',{
+module.exports = sequelize.define('user',{
   id: {
     type:Sequelize.INTEGER,
     primaryKey: true,
@@ -24,7 +24,7 @@ module.exports.users = sequelize.define('user',{
       hooks: {
         // eslint-disable-next-line no-unused-vars
         afterValidate: (data, options) => {
-          var shasum = crypto.createHash('sha1');
+          let shasum = crypto.createHash('sha1');
           shasum.update(data.password);
           data.password = shasum.digest('hex');
         }
