@@ -1,3 +1,9 @@
+--여기 데이터를 기준으로 테이블을 짜겠습니다. 필요한 DB 명령령도 여기 저장해놓고 쓰면 됩니다.
+
+--mysql -u root -p --host [host] --port [port]
+--show database;
+--show tables;
+
 -- ---
 -- Globals
 -- ---
