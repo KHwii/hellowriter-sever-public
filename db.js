@@ -1,1 +1,1 @@
-const sequelize = require
+const sequelize = require ('sequelize')
