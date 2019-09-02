@@ -12,12 +12,12 @@ require("./config/config.js");
 // console.log(global.gConfig,' gConfig 확인');
 
 //DB 초기화
-require("./db");
+require("./db/db");
 const User = require("./db/user");
 
 app.use(express.json());
 app.set("port", global.gConfig.node_port);
-app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:5000" }));
 app.options("*", cors());
 
 app.listen(app.get("port"));
