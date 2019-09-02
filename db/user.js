@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-const sequelize = require("./db/db");
+const sequelize = require("../db");
 const crypto = require("crypto");
 
 module.exports.User = sequelize.define(

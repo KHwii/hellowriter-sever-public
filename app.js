@@ -12,7 +12,7 @@ require("./config/config.js");
 // console.log(global.gConfig,' gConfig 확인');
 
 //DB 초기화
-require("./db/db");
+require("./db");
 const User = require("./db/user");
 
 app.use(express.json());

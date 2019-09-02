@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-const sequelize = require("../db/db");
+const sequelize = require("../db");
 const crypto = require("crypto");
 
 module.exports.Topics = sequelize.define(
@@ -19,18 +19,18 @@ module.exports.Topics = sequelize.define(
       allowNULL: false
     },
     publish_allow: {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER,
       allowNULL: false
     }
-  },
-  {
-    hooks: {
-      // eslint-disable-next-line no-unused-vars
-      afterValidate: (data, options) => {
-        let shasum = crypto.createHash("sha1");
-        shasum.update(data.password);
-        data.password = shasum.digest("hex");
-      }
-    }
   }
+  // {
+  //   hooks: {
+  //     // eslint-disable-next-line no-unused-vars
+  //     afterValidate: (data, options) => {
+  //       let shasum = crypto.createHash("sha1");
+  //       shasum.update(data.password);
+  //       data.password = shasum.digest("hex");
+  //     }
+  //   }
+  // }
 );
