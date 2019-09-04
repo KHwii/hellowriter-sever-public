@@ -1,4 +1,5 @@
 let models = require("../models/models");
+let getTags3 = require("../util/uility").getTags3;
 
 module.exports = {
   topics: {
@@ -79,11 +80,32 @@ module.exports = {
     },
     post: async function (req, res) {
       try {
-        let result = await models.articles.post(req.body);
+        req.body.user_id = await models.users.getUserId(req.body.email);
+        console.log(req.body.isCustomIssue, "커스텀?");
+        if (req.body.isCustomIssue === true) {
+          let param = {
+            topic_text: req.body.topic_text,
+            user_id: req.body.user_id
+          };
+          let queryResult = await models.topics.post(param);
+          console.log(queryResult, "토픽 인풋 결과");
+        } else {
+          console.log("예열 작업", req.body.topic_text);
+          let temp = await models.topics.getTopicId(req.body.topic_text);
+          console.log(temp,);
+          // req.body.topic_id
+        }
+        let topTags = getTags3(String(req.body.article_text));
+        console.log(req.body, topTags, "최종바디");
+        let result = await models.articles.post(req.body, topTags);
         if (result.dataValues) {
+          console.log("잘했어!")
           res.status(200).send({success: true});
+        } else {
+          console.log(result, "NOT GOOD")
         }
       } catch (error) {
+        console.log(error, "못했어!");
         res.status(400).send({success: false});
       }
     }
