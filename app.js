@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-console.log("hello, writer.");
 process.env.NODE_ENV = "development";
 // 배포하기 전에 다음 주석을 풀어주세요
 // process.env.NODE_ENV = 'production';
