@@ -10,7 +10,7 @@ module.exports.getTags3 = (string) => {
     }
   }
   // console.log(myObj)
-  let returnWrodArr = [];
+  let returnArr = [];
 
   for (let j = 0; j < 3; j++) {
     let Counter = 0;
@@ -23,10 +23,10 @@ module.exports.getTags3 = (string) => {
       }
     }
     delete myObj[bestWord]
-    returnWrodArr[j]=bestWord;
+    returnArr[j]=bestWord;
   }
 
-  return returnWrodArr;
+  return returnArr;
 
   function getFinedWord(char) {
     let lastArr1 = ["은", "는", "가", "이", "을", "를"];
