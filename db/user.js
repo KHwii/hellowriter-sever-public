@@ -2,8 +2,8 @@ const Sequelize = require("sequelize");
 const sequelize = require("./db");
 const crypto = require("crypto");
 
-module.exports.User = sequelize.define(
-  "user",
+module.exports.Users = sequelize.define(
+  "users",
   {
     id: {
       type: Sequelize.INTEGER,
