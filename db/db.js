@@ -11,6 +11,7 @@ const sequelize = new Sequelize(
     host: secret.DB_HOST,
     logging: true,
     dialect: "mysql",
+    timezone: "+09:00",
     // 'sync': {force: false},
 
     define: {
