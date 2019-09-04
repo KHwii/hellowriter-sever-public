@@ -69,5 +69,24 @@ module.exports = {
         res.status(400).send({success:false});
       }
     }
+  },
+  users: {
+    post: async function (req, res) {
+      if (req.url === "/signup" && req.method === "POST") {
+        let queryResult = await models.users.post(req.body);
+        console.log(queryResult,"이번에 나온 값!")
+        if (queryResult.duplicated === true) {
+          res.send(
+              400,
+              queryResult.data.email +
+              " 님은 이미 가입된 상태였습니다. 잘못된 요청입니다."
+          );
+        } else {
+          res.send(200, queryResult.data.email + " 님의 가입을 축합니다.");
+        }
+      } else {
+        res.send("처리되지 못한 요청");
+      }
+    }
   }
 };

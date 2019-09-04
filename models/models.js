@@ -1,6 +1,7 @@
 let Topics = require("../db/topics").Topics;
 let Users = require("../db/user").User;
 let Articles = require("../db/articles").Articles;
+let Users = require("../db/user").Users;
 
 module.exports = {
   topics: {
@@ -88,6 +89,25 @@ module.exports = {
         return error;
       }
     }
-
+  },
+  users: {
+    post: async function (body) {
+      try {
+        return await Users.findOrCreate({
+          where: {
+            email: body.email
+          },
+          defaults: {
+            password: body.password,
+            nickname: body.nickname
+          }
+        }).then(([user, created]) => {
+          return {data: user.get(), duplicated: !created};
+        });
+      } catch
+          (error) {
+        return error;
+      }
+    }
   }
 };
