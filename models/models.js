@@ -1,5 +1,4 @@
 let Topics = require("../db/topics").Topics;
-let Users = require("../db/user").User;
 let Articles = require("../db/articles").Articles;
 let Users = require("../db/user").Users;
 
@@ -45,12 +44,29 @@ module.exports = {
     },
     post: async function(body) {
       try {
-        let result = await Users.create({
-          email: body.email,
-          password: body.password,
-          nickname: body.nickname
+        return await Users.findOrCreate({
+          where: {
+            email: body.email
+          },
+          defaults: {
+            password: body.password,
+            nickname: body.nickname
+          }
+        }).then(([user, created]) => {
+          return {data: user.get(), duplicated: !created};
         });
-        return result;
+      } catch
+          (error) {
+        return error;
+      }
+    },
+    checkMail: async function (body) {
+      try {
+        return await Users.findAll({
+          where: {
+            email: body.email
+          }
+        })
       } catch (error) {
         return error;
       }
@@ -90,24 +106,4 @@ module.exports = {
       }
     }
   },
-  users: {
-    post: async function (body) {
-      try {
-        return await Users.findOrCreate({
-          where: {
-            email: body.email
-          },
-          defaults: {
-            password: body.password,
-            nickname: body.nickname
-          }
-        }).then(([user, created]) => {
-          return {data: user.get(), duplicated: !created};
-        });
-      } catch
-          (error) {
-        return error;
-      }
-    }
-  }
 };

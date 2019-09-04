@@ -3,6 +3,7 @@ let router = require("express").Router();
 let cors = require("cors");
 
 router.post("/signup", controller.users.post);
+router.post("/signup/email", controller.users.checkMail);
 
 router.get("/topics", cors(), controller.topics.get);
 router.post("/topics", controller.topics.post);
