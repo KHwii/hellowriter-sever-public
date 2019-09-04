@@ -25,7 +25,6 @@ module.exports.getTags3 = (string) => {
     delete myObj[bestWord]
     returnArr[j]=bestWord;
   }
-
   return returnArr;
 
   function getFinedWord(char) {
@@ -33,15 +32,15 @@ module.exports.getTags3 = (string) => {
     let lastArr2 = ["이다", "했다", "왔다", "다며", "에서"];
     let lastArr4 = ["들로부터", "그러면서"];
     if (lastArr1.includes(char.slice(-1))) {
-      console.log(char, "=>", char.slice(0, -1))
+      // console.log(char, "=>", char.slice(0, -1))
       return char.slice(0, -1);
     }
     if (lastArr2.includes(char.slice(-2))) {
-      console.log(char, "=>", char.slice(0, -2))
+      // console.log(char, "=>", char.slice(0, -2))
       return char.slice(0, -2);
     }
     if (lastArr4.includes(char.slice(-4))) {
-      console.log(char, "=>", char.slice(0, -4));
+      // console.log(char, "=>", char.slice(0, -4));
       return char.slice(0, -4);
     }
     return char;
