@@ -3,7 +3,7 @@ let getTags3 = require("../util/uility").getTags3;
 
 module.exports = {
   topics: {
-    get: async function (req, res) {
+    get: async function(req, res) {
       try {
         let result = await models.topics.get();
         res.status(200).send(result);
@@ -11,7 +11,7 @@ module.exports = {
         res.status(400).send(error);
       }
     },
-    post: async function (req, res) {
+    post: async function(req, res) {
       try {
         let result = await models.topics.post(req.body);
         if (result.dataValues) {
@@ -21,7 +21,7 @@ module.exports = {
         res.status(400).send(error);
       }
     },
-    test: async function (req, res) {
+    test: async function(req, res) {
       try {
         let result = await models.topics.test();
         res.status(200).send(result);
@@ -31,7 +31,7 @@ module.exports = {
     }
   },
   users: {
-    get: async function (req, res) {
+    get: async function(req, res) {
       try {
         let result = await models.users.get();
         res.status(200).send(result);
@@ -39,13 +39,13 @@ module.exports = {
         res.status(400).send(error);
       }
     },
-    post: async function (req, res) {
+    post: async function(req, res) {
       if (req.url === "/signup" && req.method === "POST") {
         let queryResult = await models.users.post(req.body);
         if (queryResult.duplicated === true) {
           res.send(
-              400,
-              queryResult.data.email +
+            400,
+            queryResult.data.email +
               " 님은 이미 가입된 상태였습니다. 잘못된 요청입니다."
           );
         } else {
@@ -55,21 +55,21 @@ module.exports = {
         res.send("처리되지 못한 요청");
       }
     },
-    checkMail: async function (req, res) {
+    checkMail: async function(req, res) {
       try {
         let queryResult = await models.users.checkMail(req.body);
         if (queryResult.length === 0) {
-          res.send(200, {duplicated: false});
+          res.send(200, { duplicated: false });
         } else if (queryResult[0]) {
-          res.send(200, {duplicated: true});
+          res.send(200, { duplicated: true });
         }
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
-    },
+    }
   },
   articles: {
-    getArticleRandom: async function (req, res) {
+    getArticleRandom: async function(req, res) {
       try {
         let result = await models.articles.getArticleRandom(req.body);
         console.log(result);
@@ -78,7 +78,7 @@ module.exports = {
         res.status(400).send(error);
       }
     },
-    post: async function (req, res) {
+    post: async function(req, res) {
       try {
         req.body.user_id = await models.users.getUserId(req.body.email);
         console.log(req.body.isCustomIssue, "커스텀?");
@@ -92,22 +92,32 @@ module.exports = {
         } else {
           console.log("예열 작업", req.body.topic_text);
           let temp = await models.topics.getTopicId(req.body.topic_text);
-          console.log(temp,);
+          console.log(temp);
           // req.body.topic_id
         }
         let topTags = getTags3(String(req.body.article_text));
         console.log(req.body, topTags, "최종바디");
         let result = await models.articles.post(req.body, topTags);
         if (result.dataValues) {
-          console.log("잘했어!")
-          res.status(200).send({success: true});
+          console.log("잘했어!");
+          res.status(200).send({ success: true });
         } else {
-          console.log(result, "NOT GOOD")
+          console.log(result, "NOT GOOD");
         }
       } catch (error) {
         console.log(error, "못했어!");
-        res.status(400).send({success: false});
+        res.status(400).send({ success: false });
       }
     }
   },
+  tags: {
+    get: async function(req, res) {
+      try {
+        let result = await models.tags.get();
+        res.status(200).send(result);
+      } catch (error) {
+        res.status(400).send(error);
+      }
+    }
+  }
 };
