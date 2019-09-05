@@ -21,10 +21,20 @@ module.exports = {
         res.status(400).send(error);
       }
     },
-    async test(req, res) {
+    notAllowed: async function(req, res) {
       try {
-        let result = await models.topics.test();
+        let result = await models.topics.notAllowed();
         res.status(200).send(result);
+      } catch (error) {
+        res.status(400).send(error);
+      }
+    },
+    confirmAllow: async function(req, res) {
+      try {
+        let result = await models.topics.confirmAllow(req.body);
+        if (result) {
+          res.status(200).send(result);
+        }
       } catch (error) {
         res.status(400).send(error);
       }

@@ -24,9 +24,25 @@ module.exports = {
         console.log(error);
       }
     },
-    async test() {
+    notAllowed: async function() {
       try {
-        let result = await Topics.findAll();
+        let result = await Topics.findAll({
+          where: { publish_allow: 0 }
+        });
+        return result;
+      } catch (error) {
+        return error;
+      }
+    },
+    confirmAllow: async function(body) {
+      try {
+        console.log(body.id);
+        let result = await Topics.update(
+          {
+            publish_allow: 1
+          },
+          { where: { id: body.id }, returning: true }
+        );
         return result;
       } catch (error) {
         return error;
