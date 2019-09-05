@@ -1,39 +1,25 @@
 const Sequelize = require("sequelize");
 const sequelize = require("./db");
-const crypto = require("crypto");
 
-module.exports.Users = sequelize.define(
-  "users",
-  {
-    id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    email: {
-      type: Sequelize.STRING,
-      allowNULL: false
-    },
-    password: {
-      type: Sequelize.STRING,
-      allowNULL: false
-    },
-    nickname: {
-      type: Sequelize.STRING,
-      allowNULL: false
-    }
+module.exports.Users = sequelize.define("users", {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
   },
-  {
-    hooks: {
-      // eslint-disable-next-line no-unused-vars
-      afterValidate: (data, options) => {
-        let shasum = crypto.createHash("sha1");
-        shasum.update(data.password);
-        data.password = shasum.digest("hex");
-      }
-    }
+  email: {
+    type: Sequelize.STRING,
+    allowNULL: false
+  },
+  password: {
+    type: Sequelize.STRING,
+    allowNULL: false
+  },
+  nickname: {
+    type: Sequelize.STRING,
+    allowNULL: false
   }
-);
+});
 
 // below SQL 📦 is define data base
 
