@@ -27,7 +27,7 @@ module.exports.Users = sequelize.define(
     hooks: {
       // eslint-disable-next-line no-unused-vars
       afterValidate: (data, options) => {
-        let shasum = crypto.createHash("sha1");
+        const shasum = crypto.createHash("sha1");
         shasum.update(data.password);
         data.password = shasum.digest("hex");
       }
