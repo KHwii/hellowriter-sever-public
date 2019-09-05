@@ -1,8 +1,10 @@
-module.exports.getTags3 = (string) => {
-  let myObj = {}
-  let workArr = string.split(' ');
+const crypto = require("crypto");
+
+module.exports.getTags3 = string => {
+  const myObj = {};
+  const workArr = string.split(" ");
   for (let i in workArr) {
-    let word = getFinedWord(workArr[i])
+    const word = getFinedWord(workArr[i]);
     if (myObj[word] === undefined) {
       myObj[word] = 1;
     } else {
@@ -10,7 +12,7 @@ module.exports.getTags3 = (string) => {
     }
   }
   // console.log(myObj)
-  let returnArr = [];
+  const returnArr = [];
 
   for (let j = 0; j < 3; j++) {
     let Counter = 0;
@@ -19,18 +21,18 @@ module.exports.getTags3 = (string) => {
     for (let i in myObj) {
       if (myObj[i] >= Counter) {
         bestWord = i;
-        Counter = myObj[i]
+        Counter = myObj[i];
       }
     }
-    delete myObj[bestWord]
-    returnArr[j]=bestWord;
+    delete myObj[bestWord];
+    returnArr[j] = bestWord;
   }
   return returnArr;
 
   function getFinedWord(char) {
-    let lastArr1 = ["은", "는", "가", "이", "을", "를"];
-    let lastArr2 = ["이다", "했다", "왔다", "다며", "에서"];
-    let lastArr4 = ["들로부터", "그러면서"];
+    const lastArr1 = ["은", "는", "가", "이", "을", "를"];
+    const lastArr2 = ["이다", "했다", "왔다", "다며", "에서"];
+    const lastArr4 = ["들로부터", "그러면서"];
     if (lastArr1.includes(char.slice(-1))) {
       // console.log(char, "=>", char.slice(0, -1))
       return char.slice(0, -1);
@@ -54,3 +56,10 @@ module.exports.getTags3 = (string) => {
 // 딸 입시·장학금 의혹 등에 대해 입장을 밝혔지만, 서울대 온라인 커뮤티니에서는 의혹이 풀리지 않았다며 비판적 반응이 나왔다.`;
 //
 // console.log(this.getTags3(testText));
+
+module.exports.hashPassword = string => {
+  const shasum = crypto.createHash("sha1");
+  shasum.update(string);
+  return shasum.digest("hex");
+};
+// console.log(this.hashPassword("123123123"));

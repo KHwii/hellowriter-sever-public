@@ -1,6 +1,6 @@
-const {Topics} = require("../db/topics");
-const {Articles} = require("../db/articles");
-const {Users} = require("../db/user");
+const { Topics } = require("../db/topics");
+const { Articles } = require("../db/articles");
+const { Users } = require("../db/user");
 
 module.exports = {
   topics: {
@@ -11,15 +11,16 @@ module.exports = {
         return error;
       }
     },
-    async post(body) { // 쓰기 한뒤 id 반환
+    async post(body) {
+      // 쓰기 한뒤 id 반환
       try {
         return await Topics.create({
           user_id: body.user_id,
           topic_text: body.topic_text,
           publish_allow: 0
         })
-            .then(res => res.id)
-            .catch((err) => console.log(err))
+          .then(res => res.id)
+          .catch(err => console.log(err));
       } catch (error) {
         console.log(error);
       }
@@ -34,19 +35,18 @@ module.exports = {
     },
     async getTopicId(topic_text) {
       try {
-        return await Topics.findOne({where: {topic_text}}).then(
-          res => res.dataValues.id
-        ).catch((err) => null)
+        return await Topics.findOne({ where: { topic_text } })
+          .then(res => res.dataValues.id)
+          .catch(err => null);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-    },
+    }
   },
   users: {
-    async get() {
+    async getById(email) {
       try {
-        const result = await Users.findAll();
-        return result;
+        return await Users.findAll({ where: { email } });
       } catch (error) {
         return error;
       }
@@ -81,7 +81,7 @@ module.exports = {
     },
     async getUserId(email) {
       try {
-        return await Users.findOne({where: {email}}).then(
+        return await Users.findOne({ where: { email } }).then(
           res => res.dataValues.id
         );
       } catch (error) {
@@ -121,9 +121,7 @@ module.exports = {
           tags_2: tagArr[1],
           tags_3: tagArr[2]
         };
-        return await Articles.create(insertData)
-            .catch(err => console.log(err)
-        );
+        return await Articles.create(insertData).catch(err => console.log(err));
       } catch (error) {
         return error;
       }

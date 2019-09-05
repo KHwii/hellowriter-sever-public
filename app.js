@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const router = require("./routes.js");
 
 const app = express();
 process.env.NODE_ENV = "development";
@@ -21,5 +22,4 @@ app.listen(app.get("port"));
 console.log("Listening on", app.get("port"));
 
 // 기본 주소 라우팅
-let router = require("./routes.js");
 app.use("/", router);

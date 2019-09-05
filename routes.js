@@ -1,7 +1,8 @@
-let controller = require("./controller/controller");
-let router = require("express").Router();
-let cors = require("cors");
+const cors = require("cors");
+const router = require("express").Router();
+const controller = require("./controller/controller");
 
+router.post("/signin", controller.users.signin);
 router.post("/signup", controller.users.post);
 router.post("/signup/email", controller.users.checkMail);
 
