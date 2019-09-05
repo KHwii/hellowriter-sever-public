@@ -5,7 +5,7 @@
   },
   "extends": [
     "airbnb",
-    "prettier"
+    "plugin:prettier/recommended"
   ],
   "globals": {
     "Atomics": "readonly",
@@ -17,7 +17,7 @@
     "sourceType": "module"
   },
   "plugins": [
-    "import"
+    "import", "prettier"
   ],
   "rules": {
     "camelcase": "off",
