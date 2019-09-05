@@ -1,4 +1,6 @@
 const crypto = require("crypto");
+const JWT = require("jsonwebtoken");
+const { jwtSalt } = require("../config/secret");
 
 module.exports.getTags3 = string => {
   const myObj = {};
@@ -59,7 +61,48 @@ module.exports.getTags3 = string => {
 
 module.exports.hashPassword = string => {
   const shasum = crypto.createHash("sha1");
-  shasum.update(string);
+  shasum.update(String(string) + jwtSalt);
   return shasum.digest("hex");
 };
-// console.log(this.hashPassword("123123123"));
+
+exports.makeAccessJWToken = userid => {
+  const payload = {
+    iss: "hello-writer",
+    sub: "AccessToken",
+    aud: userid,
+    shortly: true
+  };
+  return JWT.sign(payload, jwtSalt, { expiresIn: 15 });
+};
+
+exports.makeRefreshJWToken = userid => {
+  const payload = {
+    iss: "hello-writer",
+    sub: "refreshToken",
+    aud: userid,
+    shortly: true
+  };
+  return JWT.sign(payload, jwtSalt, { expiresIn: 30 });
+};
+
+exports.verifyToken = token => {
+  return new Promise(resolve => {
+    JWT.verify(token, jwtSalt, (err, decoded) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("** 해독 완료 **");
+        resolve(decoded);
+      }
+    });
+  });
+};
+
+exports.isLoggedIn = req => {
+  return req.session ? !!req.session.user : false;
+};
+
+
+
+// req.session.cookie.expires = new Date(Date.now() + hour)
+// req.session.cookie.maxAge = hour

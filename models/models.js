@@ -1,6 +1,7 @@
 const { Topics } = require("../db/topics");
 const { Articles } = require("../db/articles");
 const { Users } = require("../db/user");
+const { hashPassword } = require("../util/uility");
 
 module.exports = {
   topics: {
@@ -45,8 +46,11 @@ module.exports = {
   },
   users: {
     async getById(email) {
+      // 파인드 원은 테이블 이름없이 바로 쓸 수 있는 객체만 준다.
       try {
-        return await Users.findAll({ where: { email } });
+        return await Users.findOne({ where: { email } })
+          .then(res => res.dataValues)
+          .catch(err => console.log(err));
       } catch (error) {
         return error;
       }
@@ -58,10 +62,11 @@ module.exports = {
             email: body.email
           },
           defaults: {
-            password: body.password,
+            password: hashPassword(body.password),
             nickname: body.nickname
           }
         }).then(([user, created]) => {
+          console.log(body.password, "가입비번");
           return { data: user.get(), duplicated: !created };
         });
       } catch (error) {
@@ -106,7 +111,6 @@ module.exports = {
     },
     async post(body, tagArr) {
       try {
-        console.log("여기@@@@@@@@@@@@@@@@@");
         const insertData = {
           topic_id: body.topic_id,
           user_id: body.user_id,

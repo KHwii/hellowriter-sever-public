@@ -37,10 +37,24 @@ module.exports = {
   },
   users: {
     async signin(req, res) {
-      console.log(req);
       const queryResult = await models.users.getById(req.body.email);
-      if (hashPassword(req.password) === queryResult[0].password) {
-        res.status(200).send({ success: true });
+      const decoded = await hashPassword(req.body.password);
+      if (decoded === queryResult.password) {
+        const accessToken = makeAccessJWToken(req.email);
+        const refreshToken = makeRefreshJWToken(req.email);
+        req.session.regenerate(() => {
+          req.session.user = queryResult;
+          console.log(req.session:);
+          res.cookie("testCookie", "123", {
+            expire: new Date(Date.now() + 600)
+          });
+          res.status(200).send({
+            success: true,
+            accessToken,
+            refreshToken,
+            id: queryResult.id
+          });
+        });
       } else {
         res.status(200).send({ success: false });
       }
