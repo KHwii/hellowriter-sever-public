@@ -1,36 +1,30 @@
-let Topics = require("../db/topics").Topics;
-let Articles = require("../db/articles").Articles;
-let Users = require("../db/user").Users;
+const {Topics} = require("../db/topics");
+const {Articles} = require("../db/articles");
+const {Users} = require("../db/user");
 
 module.exports = {
   topics: {
-    get: async function() {
+    async get() {
       try {
-        let result = await Topics.findAll();
-        return result;
+        return await Topics.findAll();
       } catch (error) {
         return error;
       }
     },
-    post: async function(body) {
+    async post(body) { // 쓰기 한뒤 id 반환
       try {
-        await Topics.create({
+        return await Topics.create({
           user_id: body.user_id,
           topic_text: body.topic_text,
           publish_allow: 0
-        }).then(res => {
-          console.log(body, res, "이거 봐야해요!@__@_@_@_@_@_@_@");
-          return res.topics.dataValues.id;
-        });
+        })
+            .then(res => res.id)
+            .catch((err) => console.log(err))
       } catch (error) {
-        console.log(
-          "----------------------------------------------여기서 잡히나요??",
-          error
-        );
-        return error;
+        console.log(error);
       }
     },
-    test: async function() {
+    async test() {
       try {
         let result = await Topics.findAll();
         return result;
@@ -38,26 +32,26 @@ module.exports = {
         return error;
       }
     },
-    getTopicId: async function(topic_text) {
+    async getTopicId(topic_text) {
       try {
-        return await Topics.findOne({ where: { topic_text: topic_text } }).then(
+        return await Topics.findOne({where: {topic_text}}).then(
           res => res.dataValues.id
-        );
+        ).catch((err) => null)
       } catch (error) {
-        return error;
+        console.log(error)
       }
-    }
+    },
   },
   users: {
-    get: async function() {
+    async get() {
       try {
-        let result = await Users.findAll();
+        const result = await Users.findAll();
         return result;
       } catch (error) {
         return error;
       }
     },
-    post: async function(body) {
+    async post(body) {
       try {
         return await Users.findOrCreate({
           where: {
@@ -74,7 +68,7 @@ module.exports = {
         return error;
       }
     },
-    checkMail: async function(body) {
+    async checkMail(body) {
       try {
         return await Users.findAll({
           where: {
@@ -85,9 +79,9 @@ module.exports = {
         return error;
       }
     },
-    getUserId: async function(email) {
+    async getUserId(email) {
       try {
-        return await Users.findOne({ where: { email: email } }).then(
+        return await Users.findOne({where: {email}}).then(
           res => res.dataValues.id
         );
       } catch (error) {
@@ -95,9 +89,8 @@ module.exports = {
       }
     }
   },
-  //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   articles: {
-    getArticleRandom: async function() {
+    async getArticleRandom() {
       try {
         let result = await Articles.findAll({
           where: {
@@ -105,21 +98,18 @@ module.exports = {
             publish_status: "public"
           }
         }); // TODO Read 테이블 완성되면 추가적으로 더 필터링 하는 로직 추가
-        let index = Math.floor(Math.random() * result.length);
+        const index = Math.floor(Math.random() * result.length);
         return result[index];
       } catch (error) {
         return error;
       }
     },
-    post: async function(body, tagArr) {
+    async post(body, tagArr) {
       try {
-        let find_topic_id_result = await Topics.findOne({
-          where: { topic_text: body.topic_text }
-        }).catch(err => console.log(err, "ㅍ_ㅍ"));
         console.log("여기@@@@@@@@@@@@@@@@@");
-        let insertData = {
-          topic_id: find_topic_id_result[0].user.dataValues.id,
-          user_id: find_user_id_result[0].id,
+        const insertData = {
+          topic_id: body.topic_id,
+          user_id: body.user_id,
           topic_text: body.topic_text,
           title: body.title,
           article_text: body.article_text,
@@ -131,10 +121,9 @@ module.exports = {
           tags_2: tagArr[1],
           tags_3: tagArr[2]
         };
-        let result = await Articles.create(insertData).catch(err =>
-          console.log(err, "본문 인서트 중 에러다 이억건.!!")
+        return await Articles.create(insertData)
+            .catch(err => console.log(err)
         );
-        return result;
       } catch (error) {
         return error;
       }
