@@ -9,7 +9,9 @@ router.post("/signup/email", controller.users.checkMail);
 
 router.get("/topics", checkToken, controller.topics.get);
 router.post("/topics", checkToken, controller.topics.post);
-router.get("/test", checkToken, controller.topics.test);
+
+router.get("/topics/notAllowed",checkToken, controller.topics.notAllowed);
+router.post("/topics/confirmAllow",checkToken, controller.topics.confirmAllow);
 
 router.get("/article/random", checkToken, controller.articles.getArticleRandom);
 router.post("/article", checkToken, controller.articles.post);
