@@ -16,6 +16,15 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": [],
-  "rules": {}
+  "plugins": [
+    "import"
+  ],
+  "rules": {
+    "camelcase": "off",
+    "no-console": "off",
+    "indent": "off",
+    "object-curly-spacing": "off",
+    "import/no-unresolved": "off",
+    "import/extensions":"off"
+  }
 }
