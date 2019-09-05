@@ -12,7 +12,6 @@ require("./config/config.js");
 
 //DB 초기화
 require("./db/db");
-const User = require("./db/user");
 
 app.use(express.json());
 app.set("port", global.gConfig.node_port);
