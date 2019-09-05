@@ -44,7 +44,7 @@ module.exports = {
         const refreshToken = makeRefreshJWToken(req.email);
         req.session.regenerate(() => {
           req.session.user = queryResult;
-          console.log(req.session:);
+          console.log(req.session);
           res.cookie("testCookie", "123", {
             expire: new Date(Date.now() + 600)
           });
