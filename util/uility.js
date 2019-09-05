@@ -1,8 +1,12 @@
-module.exports.getTags3 = (string) => {
-  let myObj = {}
-  let workArr = string.split(' ');
+const crypto = require("crypto");
+const JWT = require("jsonwebtoken");
+const { jwtSalt } = require("../config/secret");
+
+module.exports.getTags3 = string => {
+  const myObj = {};
+  const workArr = string.split(" ");
   for (let i in workArr) {
-    let word = getFinedWord(workArr[i])
+    const word = getFinedWord(workArr[i]);
     if (myObj[word] === undefined) {
       myObj[word] = 1;
     } else {
@@ -10,7 +14,7 @@ module.exports.getTags3 = (string) => {
     }
   }
   // console.log(myObj)
-  let returnArr = [];
+  const returnArr = [];
 
   for (let j = 0; j < 3; j++) {
     let Counter = 0;
@@ -19,18 +23,18 @@ module.exports.getTags3 = (string) => {
     for (let i in myObj) {
       if (myObj[i] >= Counter) {
         bestWord = i;
-        Counter = myObj[i]
+        Counter = myObj[i];
       }
     }
-    delete myObj[bestWord]
-    returnArr[j]=bestWord;
+    delete myObj[bestWord];
+    returnArr[j] = bestWord;
   }
   return returnArr;
 
   function getFinedWord(char) {
-    let lastArr1 = ["은", "는", "가", "이", "을", "를"];
-    let lastArr2 = ["이다", "했다", "왔다", "다며", "에서"];
-    let lastArr4 = ["들로부터", "그러면서"];
+    const lastArr1 = ["은", "는", "가", "이", "을", "를"];
+    const lastArr2 = ["이다", "했다", "왔다", "다며", "에서"];
+    const lastArr4 = ["들로부터", "그러면서"];
     if (lastArr1.includes(char.slice(-1))) {
       // console.log(char, "=>", char.slice(0, -1))
       return char.slice(0, -1);
@@ -54,3 +58,51 @@ module.exports.getTags3 = (string) => {
 // 딸 입시·장학금 의혹 등에 대해 입장을 밝혔지만, 서울대 온라인 커뮤티니에서는 의혹이 풀리지 않았다며 비판적 반응이 나왔다.`;
 //
 // console.log(this.getTags3(testText));
+
+module.exports.hashPassword = string => {
+  const shasum = crypto.createHash("sha1");
+  shasum.update(String(string) + jwtSalt);
+  return shasum.digest("hex");
+};
+
+exports.makeAccessJWToken = userid => {
+  const payload = {
+    iss: "hello-writer",
+    sub: "AccessToken",
+    aud: userid,
+    shortly: true
+  };
+  return JWT.sign(payload, jwtSalt, { expiresIn: 15 });
+};
+
+exports.makeRefreshJWToken = userid => {
+  const payload = {
+    iss: "hello-writer",
+    sub: "refreshToken",
+    aud: userid,
+    shortly: true
+  };
+  return JWT.sign(payload, jwtSalt, { expiresIn: 30 });
+};
+
+exports.verifyToken = token => {
+  return new Promise(resolve => {
+    JWT.verify(token, jwtSalt, (err, decoded) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("** 해독 완료 **");
+        resolve(decoded);
+      }
+    });
+  });
+};
+
+exports.isLoggedIn = req => {
+  return req.session ? !!req.session.user : false;
+};
+
+
+
+// req.session.cookie.expires = new Date(Date.now() + hour)
+// req.session.cookie.maxAge = hour

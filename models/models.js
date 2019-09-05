@@ -1,7 +1,8 @@
+const { Op } = require("sequelize");
 const { Topics } = require("../db/topics");
 const { Articles } = require("../db/articles");
 const { Users } = require("../db/user");
-const { Op } = require("sequelize");
+const { hashPassword } = require("../util/uility");
 
 module.exports = {
   topics: {
@@ -26,9 +27,9 @@ module.exports = {
         console.log(error);
       }
     },
-    notAllowed: async function() {
+    async notAllowed() {
       try {
-        let result = await Topics.findAll({
+        const result = await Topics.findAll({
           where: { publish_allow: 0 }
         });
         return result;
@@ -36,10 +37,10 @@ module.exports = {
         return error;
       }
     },
-    confirmAllow: async function(body) {
+    async confirmAllow(body) {
       try {
         console.log(body.id);
-        let result = await Topics.update(
+        const result = await Topics.update(
           {
             publish_allow: 1
           },
@@ -61,10 +62,12 @@ module.exports = {
     }
   },
   users: {
-    async get() {
+    async getById(email) {
+      // 파인드 원은 테이블 이름없이 바로 쓸 수 있는 객체만 준다.
       try {
-        const result = await Users.findAll();
-        return result;
+        return await Users.findOne({ where: { email } })
+          .then(res => res.dataValues)
+          .catch(err => console.log(err));
       } catch (error) {
         return error;
       }
@@ -76,10 +79,11 @@ module.exports = {
             email: body.email
           },
           defaults: {
-            password: body.password,
+            password: hashPassword(body.password),
             nickname: body.nickname
           }
         }).then(([user, created]) => {
+          console.log(body.password, "가입비번");
           return { data: user.get(), duplicated: !created };
         });
       } catch (error) {
@@ -124,7 +128,6 @@ module.exports = {
     },
     async post(body, tagArr) {
       try {
-        console.log("여기@@@@@@@@@@@@@@@@@");
         const insertData = {
           topic_id: body.topic_id,
           user_id: body.user_id,
@@ -180,10 +183,11 @@ module.exports = {
     }
   },
   tags: {
+    // eslint-disable-next-line func-names
     get: async function() {
       try {
         let arr = [];
-        let result = await Articles.findAll({
+        const result = await Articles.findAll({
           attributes: ["tags_1", "tags_2", "tags_3"]
         });
         await result.forEach(obj => {

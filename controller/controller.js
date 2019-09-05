@@ -1,5 +1,10 @@
 const models = require("../models/models");
-const getTags3 = require("../util/uility").getTags3;
+const {
+  getTags3,
+  hashPassword,
+  makeAccessJWToken,
+  makeRefreshJWToken
+} = require("../util/uility");
 
 module.exports = {
   topics: {
@@ -46,12 +51,27 @@ module.exports = {
     }
   },
   users: {
-    async get(req, res) {
-      try {
-        let result = await models.users.get();
-        res.status(200).send(result);
-      } catch (error) {
-        res.status(400).send(error);
+    async signin(req, res) {
+      const queryResult = await models.users.getById(req.body.email);
+      const decoded = await hashPassword(req.body.password);
+      if (decoded === queryResult.password) {
+        const accessToken = makeAccessJWToken(req.email);
+        const refreshToken = makeRefreshJWToken(req.email);
+        req.session.regenerate(() => {
+          req.session.user = queryResult;
+          console.log(req.session);
+          res.cookie("testCookie", "123", {
+            expire: new Date(Date.now() + 600)
+          });
+          res.status(200).send({
+            success: true,
+            accessToken,
+            refreshToken,
+            id: queryResult.id
+          });
+        });
+      } else {
+        res.status(200).send({ success: false });
       }
     },
     async post(req, res) {

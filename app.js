@@ -1,7 +1,12 @@
 const express = require("express");
 const cors = require("cors");
-
+const session = require("express-session");
+const { session_secret } = require("./config/secret");
+const { userLogging } = require("./middleware");
+const cookieParse = require("cookie-parser");
 const app = express();
+module.exports.app = app;
+
 process.env.NODE_ENV = "development";
 // 배포하기 전에 다음 주석을 풀어주세요
 // process.env.NODE_ENV = 'production';
@@ -10,16 +15,34 @@ process.env.NODE_ENV = "development";
 require("./config/config.js");
 // console.log(global.gConfig,' gConfig 확인');
 
-//DB 초기화
+// DB 초기화
 require("./db/db");
 
 app.use(express.json());
 app.set("port", global.gConfig.node_port);
 app.use(cors({ credentials: true, origin: "*" }));
+app.use(cookieParse());
+app.use(
+  session({
+    secret: session_secret,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+  })
+);
+app.use(userLogging);
+
+//    req.session.destroy();
 
 app.listen(app.get("port"));
 console.log("Listening on", app.get("port"));
 
+const router = require("./routes.js");
 // 기본 주소 라우팅
-let router = require("./routes.js");
 app.use("/", router);
+
+// 잡히지 않은 에러를 잡습니다.
+process.on("uncaughtException", err => {
+  console.error(err, "############# 죽지마 서버야#########");
+  process.exit(1);
+});

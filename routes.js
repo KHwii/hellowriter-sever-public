@@ -1,18 +1,21 @@
-let controller = require("./controller/controller");
-let router = require("express").Router();
-let cors = require("cors");
+const router = require("express").Router();
+const { checkToken } = require("./middleware");
+const controller = require("./controller/controller");
+console.log(checkToken);
 
+router.post("/signin", controller.users.signin);
 router.post("/signup", controller.users.post);
 router.post("/signup/email", controller.users.checkMail);
 
-router.get("/topics", cors(), controller.topics.get);
-router.post("/topics", controller.topics.post);
-router.get("/topics/notAllowed", cors(), controller.topics.notAllowed);
-router.post("/topics/confirmAllow", controller.topics.confirmAllow);
+router.get("/topics", checkToken, controller.topics.get);
+router.post("/topics", checkToken, controller.topics.post);
 
-router.get("/article/random", cors(), controller.articles.getArticleRandom);
-router.post("/article", controller.articles.post);
+router.get("/topics/notAllowed",checkToken, controller.topics.notAllowed);
+router.post("/topics/confirmAllow",checkToken, controller.topics.confirmAllow);
 
-router.get("/tags", cors(), controller.tags.get);
+router.get("/article/random", checkToken, controller.articles.getArticleRandom);
+router.post("/article", checkToken, controller.articles.post);
+
+router.get("/tags", checkToken, controller.tags.get);
 
 module.exports = router;
