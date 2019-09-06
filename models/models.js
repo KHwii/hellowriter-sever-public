@@ -1,6 +1,7 @@
 const { Topics } = require("../db/topics");
 const { Articles } = require("../db/articles");
 const { Users } = require("../db/user");
+const { Reads } = require("../db/read");
 const { hashPassword } = require("../util/uility");
 
 module.exports = {
@@ -164,6 +165,25 @@ module.exports = {
         return arr;
       } catch (error) {
         return error;
+      }
+    }
+  },
+  reads: {
+    post: async (rating, user_id, article_id) => {
+      try {
+        console.log(rating,user_id,article_id,"있어?")
+        return await Reads.create({
+          rating: rating,
+          user_id: user_id,
+          article_id: article_id
+        })
+          .then(res => {
+            console.log(res, "크레이트 결과~");
+            return res;
+          })
+          .catch(err => console.log(err));
+      } catch (e) {
+        console.log(e);
       }
     }
   }

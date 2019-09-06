@@ -13,7 +13,6 @@ module.exports.getTags3 = string => {
       myObj[word]++;
     }
   }
-  // console.log(myObj)
   const returnArr = [];
 
   for (let j = 0; j < 3; j++) {
@@ -56,8 +55,30 @@ module.exports.getTags3 = string => {
 // 지난달 23일 개인 단위의 학생들로부터 1차 촛불집회를 시작했다. 이어 지난달 28일 2차 촛불집회를 진행, 전날 운영위원회 임시회의를
 // 마친 후 3차 촛불 집회 개최에 대한 의견을 모았다. 한편 조 후보자는 지난 2일 12시간에 이르는 ‘대국민 기자간담회’를 통해
 // 딸 입시·장학금 의혹 등에 대해 입장을 밝혔지만, 서울대 온라인 커뮤티니에서는 의혹이 풀리지 않았다며 비판적 반응이 나왔다.`;
-//
 // console.log(this.getTags3(testText));
+
+// exports.makeTestAccessJWToken = userid => {
+//   const payload = {
+//     iss: "hello-writer",
+//     sub: "AccessToken",
+//     aud: userid,
+//     shortly: true
+//   };
+//   return JWT.sign(payload, jwtSalt, { expiresIn: 999999999999 });
+// };
+//
+// exports.makeRefreshJWToken = userid => {
+//   const payload = {
+//     iss: "hello-writer",
+//     sub: "refreshToken",
+//     aud: userid,
+//     shortly: true
+//   };
+//   return JWT.sign(payload, jwtSalt, { expiresIn: 999999999999 });
+// };
+
+// console.log(this.makeTestAccessJWToken("test@test.com"));
+// console.log(this.makeRefreshJWToken("test@test.com"));
 
 module.exports.hashPassword = string => {
   const shasum = crypto.createHash("sha1");
@@ -101,8 +122,6 @@ exports.verifyToken = token => {
 exports.isLoggedIn = req => {
   return req.session ? !!req.session.user : false;
 };
-
-
 
 // req.session.cookie.expires = new Date(Date.now() + hour)
 // req.session.cookie.maxAge = hour
