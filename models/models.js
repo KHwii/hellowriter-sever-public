@@ -27,7 +27,7 @@ module.exports = {
         console.log(error);
       }
     },
-    notAllowed: async function() {
+    async notAllowed() {
       try {
         let result = await Topics.findAll({
           where: { publish_allow: 0 }
@@ -37,9 +37,8 @@ module.exports = {
         return error;
       }
     },
-    confirmAllow: async function(body) {
+    async confirmAllow(body) {
       try {
-        console.log(body.id);
         let result = await Topics.update(
           {
             publish_allow: 1
@@ -58,6 +57,18 @@ module.exports = {
           .catch(err => null);
       } catch (error) {
         console.log(error);
+      }
+    },
+    async random() {
+      try {
+        let result = await Topics.findAll({
+          where: { publish_allow: 1 }
+        });
+        console.log(result.filter(obj => obj.dataValues.topic_text));
+        let random = Math.floor(Math.random() * result.dataValues.length);
+        return result.dataValues[random].topic_text;
+      } catch (error) {
+        return error;
       }
     }
   },
@@ -83,7 +94,6 @@ module.exports = {
             nickname: body.nickname
           }
         }).then(([user, created]) => {
-          console.log(body.password, "가입비번");
           return { data: user.get(), duplicated: !created };
         });
       } catch (error) {
@@ -149,7 +159,7 @@ module.exports = {
     }
   },
   tags: {
-    get: async function() {
+    async get() {
       try {
         let arr = [];
         let result = await Articles.findAll({

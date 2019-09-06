@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { checkToken } = require("./middleware");
 const controller = require("./controller/controller");
+
 console.log(checkToken);
 
 router.post("/signin", controller.users.signin);
@@ -9,6 +10,7 @@ router.post("/signup", controller.users.post);
 router.post("/signup/email", controller.users.checkMail);
 
 router.get("/topics", checkToken, controller.topics.get);
+router.get("/topics/random", checkToken, controller.topics.random);
 router.post("/topics", checkToken, controller.topics.post);
 
 router.get("/topics/notAllowed", checkToken, controller.topics.notAllowed);

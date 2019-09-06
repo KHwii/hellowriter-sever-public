@@ -26,7 +26,7 @@ module.exports = {
         res.status(400).send(error);
       }
     },
-    notAllowed: async function(req, res) {
+    async notAllowed(req, res) {
       try {
         let result = await models.topics.notAllowed();
         res.status(200).send(result);
@@ -34,9 +34,19 @@ module.exports = {
         res.status(400).send(error);
       }
     },
-    confirmAllow: async function(req, res) {
+    async confirmAllow(req, res) {
       try {
         let result = await models.topics.confirmAllow(req.body);
+        if (result) {
+          res.status(200).send(result);
+        }
+      } catch (error) {
+        res.status(400).send(error);
+      }
+    },
+    async random(req, res) {
+      try {
+        let result = await models.topics.random();
         if (result) {
           res.status(200).send(result);
         }
@@ -138,7 +148,7 @@ module.exports = {
     }
   },
   tags: {
-    get: async function(req, res) {
+    async get(req, res) {
       try {
         let result = await models.tags.get();
         res.status(200).send(result);

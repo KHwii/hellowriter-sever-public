@@ -2,8 +2,7 @@ const { verifyToken, makeAccessJWToken } = require("./util/uility");
 
 module.exports = {
   checkToken: async (req, res, next) => {
-    console.log(req.body,"신분검사");
-    const isValidAccessToken = await verifyToken(req.body.accessToken);
+    const isValidAccessToken = await verifyToken(req.headers.accesstoken);
     if (isValidAccessToken) {
       console.log(
         isValidAccessToken,
@@ -12,7 +11,7 @@ module.exports = {
       );
       next();
     } else {
-      const isValidRefreshToken = await verifyToken(req.body.refreshToken);
+      const isValidRefreshToken = await verifyToken(req.headers.refreshtoken);
       if (isValidRefreshToken) {
         res.body.accessKey = makeAccessJWToken(req.session.id);
         console.log(
