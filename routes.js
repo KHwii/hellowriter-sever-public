@@ -5,6 +5,7 @@ const controller = require("./controller/controller");
 console.log(checkToken);
 
 router.post("/signin", controller.users.signin);
+router.get("/signout", controller.users.signOut);
 router.post("/signup", controller.users.post);
 router.post("/signup/email", controller.users.checkMail);
 
@@ -19,5 +20,7 @@ router.get("/article/random", checkToken, controller.articles.getArticleRandom);
 router.post("/article", checkToken, controller.articles.post);
 
 router.get("/tags", checkToken, controller.tags.get);
+
+router.post("/read", checkToken, controller.reads.post);
 
 module.exports = router;

@@ -1,9 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
+const cookieParse = require("cookie-parser");
 const { session_secret } = require("./config/secret");
 const { userLogging } = require("./middleware");
-const cookieParse = require("cookie-parser");
+
 const app = express();
 module.exports.app = app;
 
@@ -20,20 +21,20 @@ require("./db/db");
 
 app.use(express.json());
 app.set("port", global.gConfig.node_port);
-app.use(cors({ credentials: true, origin: "*" }));
+app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParse());
 app.use(
   session({
     secret: session_secret,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true }
+    cookie: { maxAge: 1000 * 60 * 60, secure: false }
   })
 );
+
 app.use(userLogging);
 
-//    req.session.destroy();
-
+//req.session.destroy();
 app.listen(app.get("port"));
 console.log("Listening on", app.get("port"));
 

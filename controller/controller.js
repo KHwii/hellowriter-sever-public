@@ -62,32 +62,32 @@ module.exports = {
       if (decoded === queryResult.password) {
         const accessToken = makeAccessJWToken(req.email);
         const refreshToken = makeRefreshJWToken(req.email);
-        req.session.regenerate(() => {
-          req.session.user = queryResult;
-          console.log(req.session);
-          res.cookie("testCookie", "123", {
-            expire: new Date(Date.now() + 1000)
-          });
-          res.status(200).send({
-            success: true,
-            accessToken,
-            refreshToken,
-            id: queryResult.id
-          });
+        req.session.user = queryResult;
+        console.log(req.session.user.email, "님 정보 확인했습니다.");
+        res.status(200).send({
+          success: true,
+          accessToken,
+          refreshToken,
+          id: queryResult.id
         });
       } else {
         res.status(200).send({ success: false });
       }
     },
-    //  안쓰고 있음.
-    // async get(req, res) {
-    //   try {
-    //     const result = await models.users.get();
-    //     res.status(200).send(result);
-    //   } catch (error) {
-    //     res.status(400).send(error);
-    //   }
-    // },
+    async signOut(req, res) {
+      try {
+        if (req.session.user) {
+          console.log("로그아웃", req.session.user);
+          req.session.destroy();
+          res.status(200).send({ success: true });
+        } else {
+          console.log("잘못된 접근");
+          res.status(400).send({ success: false });
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    },
     async post(req, res) {
       if (req.url === "/signup" && req.method === "POST") {
         const queryResult = await models.users.post(req.body);
@@ -156,5 +156,29 @@ module.exports = {
         res.status(400).send(error);
       }
     }
+  },
+  reads: {
+    post: async (req, res) => {
+      try {
+        console.log(req.user_id, "잘 가지고 왔니~1111");
+        const result = await models.reads.post(
+          req.body.rating,
+          req.body.user_id,
+          req.body.article_id
+        );
+        console.log(result, "잘 가지고 왔니~22222");
+        if (result) {
+          res.status(200).send({ success: true });
+        } else {
+          res.status(400).send({ success: false });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
   }
 };
+
+// POST /read
+// 현재 읽고 있는 글 (state에 저장된) 평가 내용 저장
+// {raiting, ariticle_id, email}
