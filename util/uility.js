@@ -72,7 +72,7 @@ exports.makeAccessJWToken = userid => {
     aud: userid,
     shortly: true
   };
-  return JWT.sign(payload, jwtSalt, { expiresIn: 15 });
+  return JWT.sign(payload, jwtSalt, { expiresIn: 100 });
 };
 
 exports.makeRefreshJWToken = userid => {
@@ -82,7 +82,7 @@ exports.makeRefreshJWToken = userid => {
     aud: userid,
     shortly: true
   };
-  return JWT.sign(payload, jwtSalt, { expiresIn: 30 });
+  return JWT.sign(payload, jwtSalt, { expiresIn: 300 });
 };
 
 exports.verifyToken = token => {
@@ -101,8 +101,6 @@ exports.verifyToken = token => {
 exports.isLoggedIn = req => {
   return req.session ? !!req.session.user : false;
 };
-
-
 
 // req.session.cookie.expires = new Date(Date.now() + hour)
 // req.session.cookie.maxAge = hour
