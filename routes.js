@@ -17,6 +17,7 @@ router.get("/topics/notAllowed", checkToken, controller.topics.notAllowed);
 router.post("/topics/confirmAllow", checkToken, controller.topics.confirmAllow);
 
 router.get("/article/random", checkToken, controller.articles.getArticleRandom);
+router.post("/article/tag", checkToken, controller.articles.getArticleByTag);
 router.post("/article", checkToken, controller.articles.post);
 
 router.get("/tags", checkToken, controller.tags.get);

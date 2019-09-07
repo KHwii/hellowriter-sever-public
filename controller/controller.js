@@ -145,6 +145,14 @@ module.exports = {
         console.log(error);
         res.status(400).send({ success: false });
       }
+    },
+    async getArticleByTag(req, res) {
+      try {
+        const result = await models.articles.getArticleByTag(req.body);
+        res.status(200).send(result);
+      } catch (error) {
+        res.status(400).send(error);
+      }
     }
   },
   tags: {

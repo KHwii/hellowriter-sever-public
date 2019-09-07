@@ -157,6 +157,16 @@ module.exports = {
       } catch (error) {
         return error;
       }
+    },
+    async getArticleByTag(tag) {
+      try {
+        // 여기부터 바꾸면 됨
+        let result = await Articles.findAll();
+        const index = Math.floor(Math.random() * result.length);
+        return result[index];
+      } catch (error) {
+        return error;
+      }
     }
   },
   tags: {
