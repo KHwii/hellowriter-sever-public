@@ -4,21 +4,21 @@ module.exports = {
   checkToken: async (req, res, next) => {
     const isValidAccessToken = await verifyToken(req.headers.accesstoken);
     if (isValidAccessToken) {
-      console.log(
-        isValidAccessToken,
-        req.session.user.email,
-        "님 안녕하세요. (1차)"
-      );
+      // console.log(
+      //   isValidAccessToken,
+      //   req.session.user.email,
+      //   "님 안녕하세요. (1차)"
+      // );
       next();
     } else {
       const isValidRefreshToken = await verifyToken(req.headers.refreshtoken);
       if (isValidRefreshToken) {
         res.body.accessKey = makeAccessJWToken(req.session.id);
-        console.log(
-          isValidRefreshToken,
-          req.session.user.email,
-          "님 안녕하세요. (2차)"
-        );
+        // console.log(
+        //   isValidRefreshToken,
+        //   req.session.user.email,
+        //   "님 안녕하세요. (2차)"
+        // );
         next();
       } else {
         res
@@ -33,20 +33,20 @@ module.exports = {
       console.log("첫 방문");
     } else {
       req.session.view++;
-      console.log(
-        req.session.user.email,
-        "님의 ",
-        req.session.view,
-        "번째 요청"
-      );
+      // console.log(
+      //   req.session.user.email,
+      //   "님의 ",
+      //   req.session.view,
+      //   "번째 요청"
+      // );
     }
-    console.log(
-      req.path,
-      req.method,
-      " 요청 정보",
-      req.session.view,
-      "요청횟수"
-    );
+    // console.log(
+    //   req.path,
+    //   req.method,
+    //   " 요청 정보",
+    //   req.session.view,
+    //   "요청횟수"
+    // );
     next();
   }
 };

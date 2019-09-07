@@ -62,11 +62,12 @@ module.exports = {
     async random() {
       try {
         let result = await Topics.findAll({
+          attributes: ["topic_text"],
           where: { publish_allow: 1 }
         });
-        console.log(result.filter(obj => obj.dataValues.topic_text));
-        let random = Math.floor(Math.random() * result.dataValues.length);
-        return result.dataValues[random].topic_text;
+        const filteredResult = result.map(obj => obj.dataValues.topic_text);
+        const random = Math.floor(Math.random() * filteredResult.length);
+        return filteredResult[random];
       } catch (error) {
         return error;
       }
@@ -181,7 +182,7 @@ module.exports = {
   reads: {
     post: async (rating, user_id, article_id) => {
       try {
-        console.log(rating,user_id,article_id,"있어?")
+        console.log(rating, user_id, article_id, "있어?");
         return await Reads.create({
           rating: rating,
           user_id: user_id,
