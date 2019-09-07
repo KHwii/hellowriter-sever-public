@@ -14,5 +14,3 @@
   "javascript.format.enable": false,
   "prettier.eslintIntegration": true
   }
-
-- 09/01 RDS 접속 정보를 비밀로 관리할 예정입니다. 때문에 서버 구동을 위해서 슬랙으로 공유할 파일을 config에 올려주시고 .gitignore에 해당 파일이 있는지 git status에 해당 파일이 있는지 확인해주세요.
