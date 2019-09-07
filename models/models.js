@@ -9,6 +9,7 @@ module.exports = {
   topics: {
     async get() {
       try {
+        console.log("이거야??");
         return await Topics.findAll();
       } catch (error) {
         return error;
@@ -68,6 +69,7 @@ module.exports = {
         });
         const filteredResult = result.map(obj => obj.dataValues.topic_text);
         const random = Math.floor(Math.random() * filteredResult.length);
+        console.log(filteredResult[random]);
         return filteredResult[random];
       } catch (error) {
         return error;
@@ -146,9 +148,9 @@ module.exports = {
           topic_text: body.topic_text,
           title: body.title,
           article_text: body.article_text,
-          burn_date: body.burn_date,
+          burn_date: body.burnDate,
           will_public_at: body.will_public_at,
-          publish_status: body.publish_status,
+          publish_status: body.publish,
           article_stash: body.article_stash,
           tags_1: tagArr[0],
           tags_2: tagArr[1],
@@ -161,6 +163,7 @@ module.exports = {
     },
     async getArticleByWord(word) {
       try {
+        console.log("??????", word);
         return await Articles.findAll({
           where: {
             [Op.or]: [
