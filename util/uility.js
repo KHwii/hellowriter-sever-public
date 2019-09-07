@@ -93,7 +93,7 @@ exports.makeAccessJWToken = userid => {
     aud: userid,
     shortly: true
   };
-  return JWT.sign(payload, jwtSalt, { expiresIn: 1000 });
+  return JWT.sign(payload, jwtSalt, { expiresIn: "7D" });
 };
 
 exports.makeRefreshJWToken = userid => {
@@ -103,7 +103,7 @@ exports.makeRefreshJWToken = userid => {
     aud: userid,
     shortly: true
   };
-  return JWT.sign(payload, jwtSalt, { expiresIn: 3000 });
+  return JWT.sign(payload, jwtSalt, { expiresIn: "10D" });
 };
 
 exports.verifyToken = token => {

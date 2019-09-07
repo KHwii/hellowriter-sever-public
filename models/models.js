@@ -130,11 +130,12 @@ module.exports = {
       try {
         let result = await Articles.findAll({
           where: {
-            article_stash: false,
+            article_stash: null,
             publish_status: "public"
           }
         }); // TODO Read 테이블 완성되면 추가적으로 더 필터링 하는 로직 추가
         const index = Math.floor(Math.random() * result.length);
+        console.log(result);
         return result[index];
       } catch (error) {
         return error;
