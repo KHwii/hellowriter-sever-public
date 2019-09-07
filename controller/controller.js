@@ -31,7 +31,7 @@ module.exports = {
         res.status(400).send(error);
       }
     },
-    notAllowed: async function(req, res) {
+    async notAllowed(req, res) {
       try {
         let result = await models.topics.notAllowed();
         res.status(200).send(result);
@@ -39,9 +39,19 @@ module.exports = {
         res.status(400).send(error);
       }
     },
-    confirmAllow: async function(req, res) {
+    async confirmAllow(req, res) {
       try {
         let result = await models.topics.confirmAllow(req.body);
+        if (result) {
+          res.status(200).send(result);
+        }
+      } catch (error) {
+        res.status(400).send(error);
+      }
+    },
+    async random(req, res) {
+      try {
+        let result = await models.topics.random();
         if (result) {
           res.status(200).send(result);
         }
@@ -57,21 +67,30 @@ module.exports = {
       if (decoded === queryResult.password) {
         const accessToken = makeAccessJWToken(req.email);
         const refreshToken = makeRefreshJWToken(req.email);
-        req.session.regenerate(() => {
-          req.session.user = queryResult;
-          console.log(req.session);
-          res.cookie("testCookie", "123", {
-            expire: new Date(Date.now() + 600)
-          });
-          res.status(200).send({
-            success: true,
-            accessToken,
-            refreshToken,
-            id: queryResult.id
-          });
+        req.session.user = queryResult;
+        console.log(req.session.user.email, "님 정보 확인했습니다.");
+        res.status(200).send({
+          success: true,
+          accessToken,
+          refreshToken,
+          id: queryResult.id
         });
       } else {
         res.status(200).send({ success: false });
+      }
+    },
+    async signOut(req, res) {
+      try {
+        if (req.session.user) {
+          console.log("로그아웃", req.session.user);
+          req.session.destroy();
+          res.status(200).send({ success: true });
+        } else {
+          console.log("잘못된 접근");
+          res.status(400).send({ success: false });
+        }
+      } catch (e) {
+        console.log(e);
       }
     },
     async post(req, res) {
@@ -134,7 +153,7 @@ module.exports = {
     }
   },
   tags: {
-    get: async function(req, res) {
+    async get(req, res) {
       try {
         let result = await models.tags.get();
         res.status(200).send(result);
@@ -142,5 +161,29 @@ module.exports = {
         res.status(400).send(error);
       }
     }
+  },
+  reads: {
+    post: async (req, res) => {
+      try {
+        console.log(req.user_id, "잘 가지고 왔니~1111");
+        const result = await models.reads.post(
+          req.body.rating,
+          req.body.user_id,
+          req.body.article_id
+        );
+        console.log(result, "잘 가지고 왔니~22222");
+        if (result) {
+          res.status(200).send({ success: true });
+        } else {
+          res.status(400).send({ success: false });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
   }
 };
+
+// POST /read
+// 현재 읽고 있는 글 (state에 저장된) 평가 내용 저장
+// {raiting, ariticle_id, email}

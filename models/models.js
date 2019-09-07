@@ -2,6 +2,7 @@ const { Op } = require("sequelize");
 const { Topics } = require("../db/topics");
 const { Articles } = require("../db/articles");
 const { Users } = require("../db/user");
+const { Reads } = require("../db/read");
 const { hashPassword } = require("../util/uility");
 
 module.exports = {
@@ -39,8 +40,7 @@ module.exports = {
     },
     async confirmAllow(body) {
       try {
-        console.log(body.id);
-        const result = await Topics.update(
+        let result = await Topics.update(
           {
             publish_allow: 1
           },
@@ -58,6 +58,19 @@ module.exports = {
           .catch(err => null);
       } catch (error) {
         console.log(error);
+      }
+    },
+    async random() {
+      try {
+        let result = await Topics.findAll({
+          attributes: ["topic_text"],
+          where: { publish_allow: 1 }
+        });
+        const filteredResult = result.map(obj => obj.dataValues.topic_text);
+        const random = Math.floor(Math.random() * filteredResult.length);
+        return filteredResult[random];
+      } catch (error) {
+        return error;
       }
     }
   },
@@ -83,7 +96,6 @@ module.exports = {
             nickname: body.nickname
           }
         }).then(([user, created]) => {
-          console.log(body.password, "가입비번");
           return { data: user.get(), duplicated: !created };
         });
       } catch (error) {
@@ -183,8 +195,7 @@ module.exports = {
     }
   },
   tags: {
-    // eslint-disable-next-line func-names
-    get: async function() {
+    async get() {
       try {
         let arr = [];
         const result = await Articles.findAll({
@@ -200,6 +211,25 @@ module.exports = {
         return arr;
       } catch (error) {
         return error;
+      }
+    }
+  },
+  reads: {
+    post: async (rating, user_id, article_id) => {
+      try {
+        console.log(rating, user_id, article_id, "있어?");
+        return await Reads.create({
+          rating: rating,
+          user_id: user_id,
+          article_id: article_id
+        })
+          .then(res => {
+            console.log(res, "크레이트 결과~");
+            return res;
+          })
+          .catch(err => console.log(err));
+      } catch (e) {
+        console.log(e);
       }
     }
   }
