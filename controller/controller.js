@@ -54,9 +54,8 @@ module.exports = {
     async random(req, res) {
       try {
         let result = await models.topics.random();
-        if (result) {
-          res.status(200).send(result);
-        }
+        console.log("!!!!!", result);
+        res.status(200).send(JSON.stringify(result));
       } catch (error) {
         res.status(400).send(error);
       }
@@ -134,16 +133,18 @@ module.exports = {
     },
     async post(req, res) {
       try {
-        req.body.user_id = await models.users.getUserId(req.body.email);
+        // req.body.user_id = await models.users.getUserId(req.body.currentUserId);
         req.body.topic_id = await models.topics.getTopicId(req.body.topic_text);
+        req.body.user_id = req.body.currentUserId;
+        req.body.article_text = req.body.text;
 
         if (req.body.topic_id === null) {
           req.body.topic_id = await models.topics.post({
             topic_text: req.body.topic_text,
-            user_id: req.body.user_id
+            user_id: req.body.currentUserId
           });
         }
-        const topTags = getTags3(String(req.body.article_text));
+        const topTags = getTags3(String(req.body.text));
         const result = await models.articles.post(req.body, topTags);
         if (result.dataValues) {
           res.status(200).send({ success: true });
