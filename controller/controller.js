@@ -10,8 +10,13 @@ module.exports = {
   topics: {
     async get(req, res) {
       try {
-        const result = await models.topics.get();
-        res.status(200).send(result);
+        if (req.query.word) {
+          const article = await models.articles.getArticleByWord(req.query.word);
+          res.status(200).send(article);
+        } else {
+          const result = await models.topics.get();
+          res.status(200).send(result);
+        }
       } catch (error) {
         res.status(400).send(error);
       }
