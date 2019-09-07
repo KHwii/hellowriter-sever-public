@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { Topics } = require("../db/topics");
 const { Articles } = require("../db/articles");
 const { Users } = require("../db/user");
@@ -29,7 +30,7 @@ module.exports = {
     },
     async notAllowed() {
       try {
-        let result = await Topics.findAll({
+        const result = await Topics.findAll({
           where: { publish_allow: 0 }
         });
         return result;
@@ -158,12 +159,36 @@ module.exports = {
         return error;
       }
     },
-    async getArticleByTag(tag) {
+    async getArticleByWord(word) {
       try {
-        // 여기부터 바꾸면 됨
-        let result = await Articles.findAll();
-        const index = Math.floor(Math.random() * result.length);
-        return result[index];
+        return await Articles.findAll({
+          where: {
+            [Op.or]: [
+              {
+                tags_1: {
+                  [Op.like]: `%${word}%`
+                }
+              },
+              {
+                tags_2: {
+                  [Op.like]: `%${word}%`
+                }
+              },
+              {
+                tags_3: {
+                  [Op.like]: `%${word}%`
+                }
+              }
+            ]
+          }
+        })
+          .then(res => {
+            const index = Math.floor(Math.random() * res.length);
+            return res[index];
+          })
+          .catch(err => {
+            console.log(err);
+          });
       } catch (error) {
         return error;
       }
@@ -173,7 +198,7 @@ module.exports = {
     async get() {
       try {
         let arr = [];
-        let result = await Articles.findAll({
+        const result = await Articles.findAll({
           attributes: ["tags_1", "tags_2", "tags_3"]
         });
         await result.forEach(obj => {
