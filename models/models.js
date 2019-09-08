@@ -142,6 +142,22 @@ module.exports = {
     }
   },
   articles: {
+    async getRecentArtTitle() {
+      try {
+        return await Articles.findAll({
+          where: {
+            article_stash: null,
+            publish_status: { [Op.or]: ["public", "half"] },
+            will_public_at: { [Op.lt]: new Date() }
+          },
+          order: [["createdAt", "DESC"], ["title", "ASC"]],
+          attributes: ["title"],
+          row: true
+        }).then(res => res.map(e => e.title));
+      } catch (error) {
+        return error;
+      }
+    },
     async count() {
       try {
         return await Articles.count();

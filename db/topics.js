@@ -48,7 +48,7 @@ Topics.associate = function(models) {
 
 Topics.sync()
   .then(res => console.log(res))
-  .catch(e => console.log(e, "여어~"));
+  .catch(e => console.log(e));
 
 // Topics.hasMany(Users, {
 //   foreignKey: "user_Id",

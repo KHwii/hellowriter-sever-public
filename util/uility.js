@@ -76,7 +76,7 @@ module.exports.getTags3 = string => {
 //   };
 //   return JWT.sign(payload, jwtSalt, { expiresIn: 999999999999 });
 // };
-
+//
 // console.log(this.makeTestAccessJWToken("test@test.com"));
 // console.log(this.makeRefreshJWToken("test@test.com"));
 
@@ -121,6 +121,21 @@ exports.verifyToken = token => {
 
 exports.isLoggedIn = req => {
   return req.session ? !!req.session.user : false;
+};
+
+exports.isFulfilled = date => {
+  if (date - new Date() < 0) {
+    return true;
+  } else {
+    return false;
+  }
+};
+exports.isBunrnInMonth = date => {
+  if (date - 1000 * 60 * 60 - new Date() > 0) {
+    return false
+  } else {
+    return true;
+  }
 };
 
 // req.session.cookie.expires = new Date(Date.now() + hour)
