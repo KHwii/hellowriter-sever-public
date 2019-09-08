@@ -1,7 +1,8 @@
 const Sequelize = require("sequelize");
 const sequelize = require("./db");
+const Topics = require("./topics");
 
-module.exports.Users = sequelize.define("users", {
+const Users = sequelize.define("users", {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -21,13 +22,13 @@ module.exports.Users = sequelize.define("users", {
   }
 });
 
-// below SQL 📦 is define data base
+Users.associate = function(models) {
+  models.Users.hasMany(Topics, {
+    foreignKey: "user_Id",
+    onDelete: "cascade"
+  });
+};
 
-// DROP TABLE IF EXISTS `user`;
-// CREATE TABLE `user` (
-//     `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
-//     `email` VARCHAR NULL DEFAULT NULL,
-//     `password` VARCHAR NULL DEFAULT NULL,
-//     `nickname` VARCHAR NULL DEFAULT NULL,
-//     PRIMARY KEY (`id`)
-// );
+Users.sync();
+
+module.exports.Users = Users;

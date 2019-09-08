@@ -23,4 +23,6 @@ router.get("/tags", checkToken, controller.tags.get);
 
 router.post("/read", checkToken, controller.reads.post);
 
+router.get("/user/article", checkToken, controller.articles.getMyInfo);
+
 module.exports = router;
