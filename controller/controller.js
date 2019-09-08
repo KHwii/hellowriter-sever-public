@@ -211,9 +211,21 @@ module.exports = {
         console.log(err);
       }
     }
+  },
+  app: {
+    getAppInfo: async (req, res) => {
+      try {
+        const data = {
+          total: await models.articles.count(),
+          topics: await models.topics.count(),
+          users: await models.users.count(),
+          success: true
+        };
+        res.status(200).send(data);
+      } catch (err) {
+        res.status(400).send({ success: false });
+        console.log(err);
+      }
+    }
   }
 };
-
-// POST /read
-// 현재 읽고 있는 글 (state에 저장된) 평가 내용 저장
-// {raiting, ariticle_id, email}
