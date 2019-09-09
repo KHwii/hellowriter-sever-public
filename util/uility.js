@@ -57,28 +57,28 @@ module.exports.getTags3 = string => {
 // 딸 입시·장학금 의혹 등에 대해 입장을 밝혔지만, 서울대 온라인 커뮤티니에서는 의혹이 풀리지 않았다며 비판적 반응이 나왔다.`;
 // console.log(this.getTags3(testText));
 
-// exports.makeTestAccessJWToken = userid => {
-//   const payload = {
-//     iss: "hello-writer",
-//     sub: "AccessToken",
-//     aud: userid,
-//     shortly: true
-//   };
-//   return JWT.sign(payload, jwtSalt, { expiresIn: 999999999999 });
-// };
-//
-// exports.makeRefreshJWToken = userid => {
-//   const payload = {
-//     iss: "hello-writer",
-//     sub: "refreshToken",
-//     aud: userid,
-//     shortly: true
-//   };
-//   return JWT.sign(payload, jwtSalt, { expiresIn: 999999999999 });
-// };
-//
-// console.log(this.makeTestAccessJWToken("test@test.com"));
-// console.log(this.makeRefreshJWToken("test@test.com"));
+exports.makeTestAccessJWToken = userid => {
+  const payload = {
+    iss: "hello-writer",
+    sub: "AccessToken",
+    aud: userid,
+    shortly: true
+  };
+  return JWT.sign(payload, jwtSalt, { expiresIn: 999999999999 });
+};
+
+exports.makeRefreshJWToken = userid => {
+  const payload = {
+    iss: "hello-writer",
+    sub: "refreshToken",
+    aud: userid,
+    shortly: true
+  };
+  return JWT.sign(payload, jwtSalt, { expiresIn: 999999999999 });
+};
+
+console.log(this.makeTestAccessJWToken("admin@admin.com"));
+console.log(this.makeRefreshJWToken("test@test.com"));
 
 module.exports.hashPassword = string => {
   const shasum = crypto.createHash("sha1");
