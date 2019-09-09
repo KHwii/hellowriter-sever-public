@@ -91,7 +91,7 @@ module.exports = {
           res.status(200).send({ success: true });
         } else {
           console.log("세션 없는데로그인이 아닌데 로그인 요청했음");
-          res.status(400).send({ success: false });
+          res.status(200).send({ success: false });
         }
       } catch (e) {
         console.log(e);
