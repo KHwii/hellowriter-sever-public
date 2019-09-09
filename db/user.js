@@ -1,6 +1,5 @@
 const Sequelize = require("sequelize");
 const sequelize = require("./db");
-const Topics = require("./topics");
 
 const Users = sequelize.define("users", {
   id: {
@@ -23,9 +22,10 @@ const Users = sequelize.define("users", {
 });
 
 Users.associate = function(models) {
-  models.Users.hasMany(Topics, {
-    foreignKey: "user_Id",
-    onDelete: "cascade"
+  models.Users.hasMany(models.Articles, {
+    foreignKey: "user_id",
+    onDelete: "cascade",
+    onUpdate: "cascade"
   });
 };
 
