@@ -14,8 +14,8 @@ const Articles = sequelize.define("articles", {
   user_id: {
     type: Sequelize.INTEGER,
     allowNULL: false,
-    references: "users",
-    referencesKey: "id",
+    model: "users",
+    key: "id",
     onUpdate: "CASCADE",
     onDelete: "CASCADE"
   },
