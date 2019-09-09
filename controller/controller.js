@@ -28,7 +28,7 @@ module.exports = {
     async post(req, res) {
       try {
         const result = await models.topics.post(req.body);
-        if (result.dataValues) {
+        if (result) {
           res.status(200).send("ok");
         }
       } catch (error) {
@@ -84,7 +84,7 @@ module.exports = {
     },
     async signOut(req, res) {
       try {
-        console.log(req.session,"현재 세")
+        console.log(req.session, "현재 세");
         if (req.session.user) {
           console.log("로그아웃", req.session.user);
           req.session.destroy();
