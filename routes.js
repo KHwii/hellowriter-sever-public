@@ -2,8 +2,6 @@ const router = require("express").Router();
 const { checkToken } = require("./middleware");
 const controller = require("./controller/controller");
 
-console.log(checkToken);
-
 router.post("/signin", controller.users.signin);
 router.get("/signout", controller.users.signOut);
 router.post("/signup", controller.users.post);

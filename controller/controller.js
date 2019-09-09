@@ -65,6 +65,7 @@ module.exports = {
   },
   users: {
     async signin(req, res) {
+      console.log(req.body, "사인테스트");
       const queryResult = await models.users.getById(req.body.email);
       const decoded = await hashPassword(req.body.password);
       if (decoded === queryResult.password) {
@@ -84,7 +85,6 @@ module.exports = {
     },
     async signOut(req, res) {
       try {
-        console.log(req.session, "현재 세");
         if (req.session.user) {
           console.log("로그아웃", req.session.user);
           req.session.destroy();
@@ -233,13 +233,12 @@ module.exports = {
   reads: {
     post: async (req, res) => {
       try {
-        console.log(req.user_id, "잘 가지고 왔니~1111");
+        console.log(req.body, "잘 가지고 왔니~1111@@@@@@@@@@");
         const result = await models.reads.post(
           req.body.rating,
           req.body.user_id,
           req.body.article_id
         );
-        console.log(result, "잘 가지고 왔니~22222");
         if (result) {
           res.status(200).send({ success: true });
         } else {
