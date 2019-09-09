@@ -3,7 +3,9 @@ const {
   getTags3,
   hashPassword,
   makeAccessJWToken,
-  makeRefreshJWToken
+  makeRefreshJWToken,
+  isFulfilled,
+  isBunrnInMonth
 } = require("../util/uility");
 
 module.exports = {
@@ -82,12 +84,13 @@ module.exports = {
     },
     async signOut(req, res) {
       try {
+        console.log(req.session,"현재 세")
         if (req.session.user) {
           console.log("로그아웃", req.session.user);
           req.session.destroy();
           res.status(200).send({ success: true });
         } else {
-          console.log("잘못된 접근");
+          console.log("세션 없는데로그인이 아닌데 로그인 요청했음");
           res.status(400).send({ success: false });
         }
       } catch (e) {
@@ -123,9 +126,44 @@ module.exports = {
     }
   },
   articles: {
+    async getHotTitle(req, res) {
+      try {
+        const result = await models.articles.getRecentArtTitle();
+        const myArticle = await models.articles.getAllArticleById(
+          req.session.user.id
+        );
+        const reduced = myArticle.reduce(
+          (acc, cur) => {
+            if (isBunrnInMonth(cur.burn_date)) {
+              acc.myBurning++;
+              console.log(acc.myBurning);
+            }
+            if (!isFulfilled(cur.will_public_at)) {
+              acc.myTimecapsule++;
+              console.log(acc.myTimecapsule);
+            }
+            return acc;
+          },
+          { myBurning: 0, myTimecapsule: 0 }
+        );
+        const topicUsedCount = await models.articles.countAricleByUsersTopic(
+          req.session.user.id
+        );
+        const data = {
+          data: result,
+          burning: reduced.myBurning,
+          timecapsule: reduced.myTimecapsule,
+          topicRefCount: topicUsedCount,
+          success: true
+        };
+        res.status(200).send(data);
+      } catch (e) {
+        res.status(400).send({ success: false });
+        console.log(e);
+      }
+    },
     async getMyInfo(req, res) {
       try {
-        console.log(req.session.user.id, "세션있");
         const result = await models.articles.getAllArticleById(
           req.session.user.id
         );
@@ -211,9 +249,21 @@ module.exports = {
         console.log(err);
       }
     }
+  },
+  app: {
+    getAppInfo: async (req, res) => {
+      try {
+        const data = {
+          total: await models.articles.count(),
+          topics: await models.topics.count(),
+          users: await models.users.count(),
+          success: true
+        };
+        res.status(200).send(data);
+      } catch (err) {
+        res.status(400).send({ success: false });
+        console.log(err);
+      }
+    }
   }
 };
-
-// POST /read
-// 현재 읽고 있는 글 (state에 저장된) 평가 내용 저장
-// {raiting, ariticle_id, email}

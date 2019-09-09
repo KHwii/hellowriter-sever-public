@@ -18,11 +18,12 @@ router.post("/topics/confirmAllow", checkToken, controller.topics.confirmAllow);
 
 router.get("/article/random", checkToken, controller.articles.getArticleRandom);
 router.post("/article", checkToken, controller.articles.post);
+router.get("/article/hot", checkToken, controller.articles.getHotTitle);
 
 router.get("/tags", checkToken, controller.tags.get);
 
 router.post("/read", checkToken, controller.reads.post);
 
 router.get("/user/article", checkToken, controller.articles.getMyInfo);
-
+router.get("/app/info", checkToken, controller.app.getAppInfo);
 module.exports = router;

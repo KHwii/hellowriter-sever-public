@@ -9,9 +9,15 @@ const { hashPassword } = require("../util/uility");
 
 module.exports = {
   topics: {
+    async count() {
+      try {
+        return await Topics.count();
+      } catch (error) {
+        return error;
+      }
+    },
     async get() {
       try {
-        console.log("이거야??");
         return await Topics.findAll();
       } catch (error) {
         return error;
@@ -79,6 +85,13 @@ module.exports = {
     }
   },
   users: {
+    async count() {
+      try {
+        return await Users.count();
+      } catch (error) {
+        return error;
+      }
+    },
     async getById(email) {
       // 파인드 원은 테이블 이름없이 바로 쓸 수 있는 객체만 준다.
       try {
@@ -129,6 +142,29 @@ module.exports = {
     }
   },
   articles: {
+    async getRecentArtTitle() {
+      try {
+        return await Articles.findAll({
+          where: {
+            article_stash: null,
+            publish_status: { [Op.or]: ["public", "half"] },
+            will_public_at: { [Op.lt]: new Date() }
+          },
+          order: [["createdAt", "DESC"], ["title", "ASC"]],
+          attributes: ["title"],
+          row: true
+        }).then(res => res.map(e => e.title));
+      } catch (error) {
+        return error;
+      }
+    },
+    async count() {
+      try {
+        return await Articles.count();
+      } catch (error) {
+        return error;
+      }
+    },
     async getAllArticleById(user_id) {
       try {
         return await Articles.findAll({

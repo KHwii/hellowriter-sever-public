@@ -12,7 +12,7 @@ const sequelize = new Sequelize(
     logging: true,
     dialect: "mysql",
     timezone: "+09:00",
-    sync: { force: true },
+    // sync: { force: true },
     define: {
       charset: "utf8",
       timestamps: true
