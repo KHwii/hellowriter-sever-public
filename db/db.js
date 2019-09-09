@@ -12,23 +12,21 @@ const sequelize = new Sequelize(
     logging: true,
     dialect: "mysql",
     timezone: "+09:00",
-    // 'sync': {force: false},
-
+    sync: { force: true },
     define: {
       charset: "utf8",
       timestamps: true
     },
     pool: {
-      max: 5,
+      max: 30,
       idle: 30000,
       acquire: 60000
     }
   }
 );
-
 sequelize
   .authenticate()
-  .then(() => {
+  .then(async () => {
     console.log("🗄 Connection has been established successfully.");
   })
   .catch(err => {

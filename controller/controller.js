@@ -123,6 +123,33 @@ module.exports = {
     }
   },
   articles: {
+    async getMyInfo(req, res) {
+      try {
+        console.log(req.session.user.id, "세션있");
+        const result = await models.articles.getAllArticleById(
+          req.session.user.id
+        );
+        let counter = 0;
+        const now = new Date();
+        result.forEach(e => {
+          if (e.will_public_at - now <= 0) {
+            counter++;
+          }
+        });
+        const result2 = await models.articles.countAricleByUsersTopic(
+          req.session.user.id
+        );
+        const data = {
+          total: result.length,
+          timecapsule: counter,
+          topic: result2
+        };
+        res.status(200).send(data);
+      } catch (e) {
+        res.status(400).send({ success: false });
+        console.log(e);
+      }
+    },
     async getArticleRandom(req, res) {
       try {
         const result = await models.articles.getArticleRandom(req.body);

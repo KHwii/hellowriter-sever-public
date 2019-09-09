@@ -1,8 +1,10 @@
 const { Op } = require("sequelize");
-const { Topics } = require("../db/topics");
+const sequelize = require("../db/db");
+
 const { Articles } = require("../db/articles");
 const { Users } = require("../db/user");
 const { Reads } = require("../db/read");
+const { Topics } = require("../db/topics");
 const { hashPassword } = require("../util/uility");
 
 module.exports = {
@@ -112,7 +114,8 @@ module.exports = {
           }
         });
       } catch (error) {
-        return error;
+        console.log(error);
+        return [];
       }
     },
     async getUserId(email) {
@@ -126,6 +129,28 @@ module.exports = {
     }
   },
   articles: {
+    async getAllArticleById(user_id) {
+      try {
+        return await Articles.findAll({
+          where: { user_id: user_id },
+          raw: true
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async countAricleByUsersTopic(userID) {
+      try {
+        return await sequelize
+          .query(
+            `SELECT COUNT(*) FROM articles as Art INNER JOIN topics as Top ON Art.topic_id =Top.id AND Top.user_id = ${userID}`,
+            { plain: true }
+          )
+          .then(res => res["COUNT(*)"]);
+      } catch (err) {
+        console.log(err);
+      }
+    },
     async getArticleRandom() {
       try {
         let result = await Articles.findAll({

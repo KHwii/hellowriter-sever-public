@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 const sequelize = require("./db");
-module.exports.Articles = sequelize.define("articles", {
+
+const Articles = sequelize.define("articles", {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -55,3 +56,13 @@ module.exports.Articles = sequelize.define("articles", {
     allowNULL: true
   }
 });
+Articles.sync();
+
+Articles.associate = function(models) {
+  models.Articles.hasOne(models.Topics, {
+    foreignKey: "id",
+    onDelete: "cascade"
+  });
+};
+
+module.exports.Articles = Articles;
