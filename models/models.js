@@ -189,16 +189,17 @@ module.exports = {
     },
     async getArticleRandom() {
       try {
-        let result = await Articles.findAll({
-          where: {
-            article_stash: null,
-            publish_status: "public"
-          }
-        }); // TODO Read 테이블 완성되면 추가적으로 더 필터링 하는 로직 추가
+        let result = await sequelize.query(
+          `SELECT * from articles as A WHERE A.publish_status IN ("public", "half") AND id NOT IN (SELECT article_id FROM "reads" as R LEFT JOIN "users" as U ON R.user_id = U.id WHERE U.id = ${userID}) AND article_stash IS NULL`,
+          { plain: true }
+        ); // TODO Read 테이블 완성되면 추가적으로 더 필터링 하는 로직 추가
+        if (result.length === 0) {
+          return 0;
+        }
         const index = Math.floor(Math.random() * result.length);
         return result[index];
       } catch (error) {
-        return error;
+        console.log(error, "새로짠 로직 에러");
       }
     },
     async post(body, tagArr) {
