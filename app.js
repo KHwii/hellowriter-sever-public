@@ -4,7 +4,6 @@ const session = require("express-session");
 const cookieParse = require("cookie-parser");
 const { session_secret } = require("./config/secret");
 const { userLogging } = require("./middleware");
-const { burnSchedule } = require("./util/uility");
 
 const app = express();
 module.exports.app = app;
@@ -37,7 +36,6 @@ app.use(userLogging);
 app.listen(app.get("port"));
 console.log("Listening on", app.get("port"));
 
-burnSchedule();
 
 const router = require("./routes.js");
 
