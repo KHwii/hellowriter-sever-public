@@ -4,6 +4,7 @@ const session = require("express-session");
 const cookieParse = require("cookie-parser");
 const { session_secret } = require("./config/secret");
 const { userLogging } = require("./middleware");
+const { burnSchedule } = require("./util/uility");
 
 const app = express();
 module.exports.app = app;
@@ -34,14 +35,12 @@ app.use(
 
 app.use(userLogging);
 
-//req.session.destroy();
 app.listen(app.get("port"));
 console.log("Listening on", app.get("port"));
 
 const router = require("./routes.js");
 // 기본 주소 라우팅
 app.use("/", router);
-
 // 잡히지 않은 에러를 잡습니다.
 process.on("uncaughtException", err => {
   console.error(err, "############# 죽지마 서버야#########");

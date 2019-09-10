@@ -138,5 +138,3 @@ exports.isBunrnInMonth = date => {
   }
 };
 
-// req.session.cookie.expires = new Date(Date.now() + hour)
-// req.session.cookie.maxAge = hour
