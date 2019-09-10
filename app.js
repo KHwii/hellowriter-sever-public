@@ -34,12 +34,13 @@ app.use(
 );
 
 app.use(userLogging);
-
 app.listen(app.get("port"));
 console.log("Listening on", app.get("port"));
 
+burnSchedule();
+
 const router = require("./routes.js");
-// 기본 주소 라우팅
+
 app.use("/", router);
 // 잡히지 않은 에러를 잡습니다.
 process.on("uncaughtException", err => {

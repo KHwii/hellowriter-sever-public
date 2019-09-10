@@ -13,7 +13,6 @@ const Topics = sequelize.define(
     user_id: {
       type: Sequelize.INTEGER,
       allowNULL: false,
-      references: { model: Users, key: "id" }
     },
     topic_text: {
       type: Sequelize.STRING,
@@ -33,26 +32,25 @@ const Topics = sequelize.define(
     timestamps: false
   }
 );
-
-Topics.associate = function(models) {
-  models.Topics.hasMany(models.Users, {
-    foreignKey: "id",
-    onDelete: "cascade"
-  });
-};
-Topics.associate = function(models) {
-  models.Topics.hasMany(models.articles, {
-    foreignKey: "topic_id"
-  });
-};
-
-Topics.sync()
-  .then(res => console.log(res))
-  .catch(e => console.log(e));
-
+//
+// Topics.associate = function(models) {
+//   models.Topics.hasMany(models.Users, {
+//     foreignKey: "id",
+//     onDelete: "cascade"
+//   });
+// };
+// Topics.associate = function(models) {
+//   models.Topics.hasMany(models.articles, {
+//     foreignKey: "topic_id"
+//   });
+// };
+//
+//   .then(res => console.log(res))
+//   .catch(e => console.log(e));
 // Topics.hasMany(Users, {
 //   foreignKey: "user_Id",
 //   onDelete: "cascade"
 // });
+Topics.sync();
 
 module.exports.Topics = Topics;
