@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const JWT = require("jsonwebtoken");
 const { jwtSalt } = require("../config/secret");
+const { articles } = require("../models/models");
 
 module.exports.getTags3 = string => {
   const myObj = {};
@@ -132,10 +133,17 @@ exports.isFulfilled = date => {
 };
 exports.isBunrnInMonth = date => {
   if (date - 1000 * 60 * 60 - new Date() > 0) {
-    return false
+    return false;
   } else {
     return true;
   }
+};
+
+exports.burnSchedule = () => {
+  setInterval(() => {
+    const burnResult = articles.burnFullfiledArticle();
+    console.log("@@@", burnResult.length, "@@@");
+  }, 1000 * 60 * 10);
 };
 
 // req.session.cookie.expires = new Date(Date.now() + hour)

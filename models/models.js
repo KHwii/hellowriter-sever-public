@@ -142,6 +142,18 @@ module.exports = {
     }
   },
   articles: {
+    async burnFullfiledArticle() {
+      try {
+        return await Articles.destroy({
+          where: {
+            burn_date: { [Op.lt]: new Date() }
+          },
+          row: true
+        });
+      } catch (error) {
+        return error;
+      }
+    },
     async getRecentArtTitle() {
       try {
         return await Articles.findAll({
