@@ -42,7 +42,6 @@ burnSchedule();
 const router = require("./routes.js");
 
 app.use("/", router);
-
 // 잡히지 않은 에러를 잡습니다.
 process.on("uncaughtException", err => {
   console.error(err, "############# 죽지마 서버야#########");

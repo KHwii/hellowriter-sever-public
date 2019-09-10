@@ -266,6 +266,10 @@ module.exports = {
         res.status(400).send({ success: false });
         console.log(err);
       }
+    },
+    burnSchedule: async () => {
+      const result = await models.articles.burnFullfiledArticle();
+      console.log("@@@ 태우기실행", result, "@@@");
     }
   }
 };

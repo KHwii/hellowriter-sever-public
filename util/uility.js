@@ -138,13 +138,3 @@ exports.isBunrnInMonth = date => {
     return true;
   }
 };
-
-exports.burnSchedule = () => {
-  setInterval(() => {
-    const burnResult = articles.burnFullfiledArticle();
-    console.log("@@@", burnResult.length, "@@@");
-  }, 1000 * 60 * 10);
-};
-
-// req.session.cookie.expires = new Date(Date.now() + hour)
-// req.session.cookie.maxAge = hour
