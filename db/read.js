@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 const sequelize = require("./db");
 
-module.exports.Reads = sequelize.define("read", {
+const Reads = sequelize.define("read", {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -20,3 +20,6 @@ module.exports.Reads = sequelize.define("read", {
     allowNULL: false
   }
 });
+Reads.sync();
+
+module.exports.Reads = Reads;

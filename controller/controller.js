@@ -3,7 +3,9 @@ const {
   getTags3,
   hashPassword,
   makeAccessJWToken,
-  makeRefreshJWToken
+  makeRefreshJWToken,
+  isFulfilled,
+  isBunrnInMonth
 } = require("../util/uility");
 
 module.exports = {
@@ -26,7 +28,7 @@ module.exports = {
     async post(req, res) {
       try {
         const result = await models.topics.post(req.body);
-        if (result.dataValues) {
+        if (result) {
           res.status(200).send("ok");
         }
       } catch (error) {
@@ -63,6 +65,7 @@ module.exports = {
   },
   users: {
     async signin(req, res) {
+      console.log(req.body, "사인테스트");
       const queryResult = await models.users.getById(req.body.email);
       const decoded = await hashPassword(req.body.password);
       if (decoded === queryResult.password) {
@@ -87,8 +90,8 @@ module.exports = {
           req.session.destroy();
           res.status(200).send({ success: true });
         } else {
-          console.log("잘못된 접근");
-          res.status(400).send({ success: false });
+          console.log("세션 없는데로그인이 아닌데 로그인 요청했음");
+          res.status(200).send({ success: false });
         }
       } catch (e) {
         console.log(e);
@@ -123,9 +126,78 @@ module.exports = {
     }
   },
   articles: {
+    async getHotTitle(req, res) {
+      try {
+        const result = await models.articles.getRecentArtTitle();
+        const myArticle = await models.articles.getAllArticleById(
+          req.session.user.id
+        );
+        const reduced = myArticle.reduce(
+          (acc, cur) => {
+            if (isBunrnInMonth(cur.burn_date)) {
+              acc.myBurning++;
+              console.log(acc.myBurning);
+            }
+            if (!isFulfilled(cur.will_public_at)) {
+              acc.myTimecapsule++;
+              console.log(acc.myTimecapsule);
+            }
+            return acc;
+          },
+          { myBurning: 0, myTimecapsule: 0 }
+        );
+        const topicUsedCount = await models.articles.countAricleByUsersTopic(
+          req.session.user.id
+        );
+        const data = {
+          data: result,
+          burning: reduced.myBurning,
+          timecapsule: reduced.myTimecapsule,
+          topicRefCount: topicUsedCount,
+          success: true
+        };
+        res.status(200).send(data);
+      } catch (e) {
+        res.status(400).send({ success: false });
+        console.log(e);
+      }
+    },
+    async getMyInfo(req, res) {
+      try {
+        const result = await models.articles.getAllArticleById(
+          req.session.user.id
+        );
+        let counter = 0;
+        const now = new Date();
+        result.forEach(e => {
+          if (e.will_public_at - now <= 0) {
+            counter++;
+          }
+        });
+        const result2 = await models.articles.countAricleByUsersTopic(
+          req.session.user.id
+        );
+        const data = {
+          total: result.length,
+          timecapsule: counter,
+          topic: result2
+        };
+        res.status(200).send(data);
+      } catch (e) {
+        res.status(400).send({ success: false });
+        console.log(e);
+      }
+    },
     async getArticleRandom(req, res) {
       try {
-        const result = await models.articles.getArticleRandom(req.body);
+        console.log(req.session.user.id, "세션 아이디 체크");
+        const result = await models.articles.getArticleRandom(
+          req.session.user.id
+        );
+        if (result === 0) {
+          res.status(200).send({ success: "NULL" });
+        }
+        console.log(result, "모델에서 받은거");
         res.status(200).send(result);
       } catch (error) {
         res.status(400).send(error);
@@ -168,13 +240,12 @@ module.exports = {
   reads: {
     post: async (req, res) => {
       try {
-        console.log(req.user_id, "잘 가지고 왔니~1111");
+        console.log(req.body, "잘 가지고 왔니~1111@@@@@@@@@@");
         const result = await models.reads.post(
           req.body.rating,
           req.body.user_id,
           req.body.article_id
         );
-        console.log(result, "잘 가지고 왔니~22222");
         if (result) {
           res.status(200).send({ success: true });
         } else {
@@ -184,9 +255,24 @@ module.exports = {
         console.log(err);
       }
     }
+  },
+  app: {
+    getAppInfo: async (req, res) => {
+      try {
+        const data = {
+          total: await models.articles.count(),
+          topics: await models.topics.count(),
+          users: await models.users.count(),
+          success: true
+        };
+        res.status(200).send(data);
+      } catch (err) {
+        res.status(400).send({ success: false });
+        console.log(err);
+      }
+    },
+    burnSchedule: async () => {
+      const result = await models.articles.burnFullfiledArticle();
+    }
   }
 };
-
-// POST /read
-// 현재 읽고 있는 글 (state에 저장된) 평가 내용 저장
-// {raiting, ariticle_id, email}

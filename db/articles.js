@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 const sequelize = require("./db");
-module.exports.Articles = sequelize.define("articles", {
+
+const Articles = sequelize.define("articles", {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -12,7 +13,7 @@ module.exports.Articles = sequelize.define("articles", {
   },
   user_id: {
     type: Sequelize.INTEGER,
-    allowNULL: false
+    allowNULL: false,
   },
   topic_text: {
     type: Sequelize.STRING,
@@ -55,3 +56,5 @@ module.exports.Articles = sequelize.define("articles", {
     allowNULL: true
   }
 });
+Articles.sync();
+module.exports.Articles = Articles;

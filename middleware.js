@@ -34,19 +34,19 @@ module.exports = {
     } else {
       req.session.view++;
       // console.log(
-      //   req.session.user.email,
+      //   req.session,
       //   "님의 ",
       //   req.session.view,
       //   "번째 요청"
       // );
     }
-    // console.log(
-    //   req.path,
-    //   req.method,
-    //   " 요청 정보",
-    //   req.session.view,
-    //   "요청횟수"
-    // );
+    console.log(
+      req.path,
+      req.method,
+      " 요청 정보",
+      req.session.view,
+      "요청횟수"
+    );
     next();
   }
 };

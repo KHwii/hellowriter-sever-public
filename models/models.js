@@ -1,15 +1,23 @@
 const { Op } = require("sequelize");
-const { Topics } = require("../db/topics");
+const sequelize = require("../db/db");
+
 const { Articles } = require("../db/articles");
 const { Users } = require("../db/user");
 const { Reads } = require("../db/read");
+const { Topics } = require("../db/topics");
 const { hashPassword } = require("../util/uility");
 
 module.exports = {
   topics: {
+    async count() {
+      try {
+        return await Topics.count();
+      } catch (error) {
+        return error;
+      }
+    },
     async get() {
       try {
-        console.log("이거야??");
         return await Topics.findAll();
       } catch (error) {
         return error;
@@ -77,6 +85,13 @@ module.exports = {
     }
   },
   users: {
+    async count() {
+      try {
+        return await Users.count();
+      } catch (error) {
+        return error;
+      }
+    },
     async getById(email) {
       // 파인드 원은 테이블 이름없이 바로 쓸 수 있는 객체만 준다.
       try {
@@ -112,7 +127,8 @@ module.exports = {
           }
         });
       } catch (error) {
-        return error;
+        console.log(error);
+        return [];
       }
     },
     async getUserId(email) {
@@ -126,19 +142,83 @@ module.exports = {
     }
   },
   articles: {
-    async getArticleRandom() {
+    async burnFullfiledArticle() {
       try {
-        let result = await Articles.findAll({
+        return await Articles.destroy({
           where: {
-            article_stash: null,
-            publish_status: "public"
-          }
-        }); // TODO Read 테이블 완성되면 추가적으로 더 필터링 하는 로직 추가
-        const index = Math.floor(Math.random() * result.length);
-        console.log(result);
-        return result[index];
+            burn_date: { [Op.lt]: new Date() }
+          },
+          row: true
+        });
       } catch (error) {
         return error;
+      }
+    },
+    async getRecentArtTitle() {
+      try {
+        return await Articles.findAll({
+          where: {
+            article_stash: null,
+            publish_status: { [Op.or]: ["public", "half"] },
+            will_public_at: { [Op.lt]: new Date() }
+          },
+          order: [["createdAt", "DESC"], ["title", "ASC"]],
+          attributes: ["title"],
+          row: true
+        }).then(res => res.map(e => e.title));
+      } catch (error) {
+        return error;
+      }
+    },
+    async count() {
+      try {
+        return await Articles.count();
+      } catch (error) {
+        return error;
+      }
+    },
+    async getAllArticleById(user_id) {
+      try {
+        return await Articles.findAll({
+          where: { user_id: user_id },
+          raw: true
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async countAricleByUsersTopic(userID) {
+      try {
+        return await sequelize
+          .query(
+            `SELECT COUNT(*) FROM articles as Art INNER JOIN topics as Top ON Art.topic_id =Top.id AND Top.user_id = ${userID}`,
+            { plain: true }
+          )
+          .then(res => res["COUNT(*)"]);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async getArticleRandom(userID) {
+      try {
+        const result = await sequelize
+          .query(
+            `SELECT * from articles as A WHERE A.publish_status IN ("public", "half") AND id NOT IN (SELECT article_id FROM \`reads\` as R LEFT JOIN \`users\` as U ON R.user_id = U.id WHERE U.id = ${userID}) AND article_stash IS NULL`,
+            { raw: true }
+          )
+          .then(res => {
+            return res;
+          });
+
+        console.log(result[0].length, "몇개 나옴??");
+        if (result[0].length === 0) {
+          return 0;
+        }
+        const index = Math.floor(Math.random() * result[0].length);
+        console.log(result[0][index], " 모델마지막");
+        return result[0][index];
+      } catch (error) {
+        console.log(error, "새로짠 로직 에러");
       }
     },
     async post(body, tagArr) {
@@ -221,14 +301,13 @@ module.exports = {
   reads: {
     post: async (rating, user_id, article_id) => {
       try {
-        console.log(rating, user_id, article_id, "있어?");
         return await Reads.create({
           rating: rating,
           user_id: user_id,
           article_id: article_id
         })
           .then(res => {
-            console.log(res, "크레이트 결과~");
+            console.log(res);
             return res;
           })
           .catch(err => console.log(err));
