@@ -28,5 +28,5 @@ router.get("/app/info", checkToken, controller.app.getAppInfo);
 setTimeout(() => {
   setInterval(controller.app.burnSchedule.bind(this), 5000);
   console.log("인터벌 작업 시작");
-}, 15000);
+}, 150000);
 module.exports = router;

@@ -190,10 +190,14 @@ module.exports = {
     },
     async getArticleRandom(req, res) {
       try {
-        const result = await models.articles.getArticleRandom(req.body);
+        console.log(req.session.user.id, "세션 아이디 체크");
+        const result = await models.articles.getArticleRandom(
+          req.session.user.id
+        );
         if (result === 0) {
           res.status(200).send({ success: "NULL" });
         }
+        console.log(result, "모델에서 받은거");
         res.status(200).send(result);
       } catch (error) {
         res.status(400).send(error);
@@ -269,7 +273,6 @@ module.exports = {
     },
     burnSchedule: async () => {
       const result = await models.articles.burnFullfiledArticle();
-      console.log("@@@ 태우기실행", result, "@@@");
     }
   }
 };

@@ -199,17 +199,24 @@ module.exports = {
         console.log(err);
       }
     },
-    async getArticleRandom() {
+    async getArticleRandom(userID) {
       try {
-        let result = await sequelize.query(
-          `SELECT * from articles as A WHERE A.publish_status IN ("public", "half") AND id NOT IN (SELECT article_id FROM "reads" as R LEFT JOIN "users" as U ON R.user_id = U.id WHERE U.id = ${userID}) AND article_stash IS NULL`,
-          { plain: true }
-        ); // TODO Read 테이블 완성되면 추가적으로 더 필터링 하는 로직 추가
-        if (result.length === 0) {
+        const result = await sequelize
+          .query(
+            `SELECT * from articles as A WHERE A.publish_status IN ("public", "half") AND id NOT IN (SELECT article_id FROM \`reads\` as R LEFT JOIN \`users\` as U ON R.user_id = U.id WHERE U.id = ${userID}) AND article_stash IS NULL`,
+            { raw: true }
+          )
+          .then(res => {
+            return res;
+          });
+
+        console.log(result[0].length, "몇개 나옴??");
+        if (result[0].length === 0) {
           return 0;
         }
-        const index = Math.floor(Math.random() * result.length);
-        return result[index];
+        const index = Math.floor(Math.random() * result[0].length);
+        console.log(result[0][index], " 모델마지막");
+        return result[0][index];
       } catch (error) {
         console.log(error, "새로짠 로직 에러");
       }
@@ -294,14 +301,13 @@ module.exports = {
   reads: {
     post: async (rating, user_id, article_id) => {
       try {
-        console.log(rating, user_id, article_id, "있어?");
         return await Reads.create({
           rating: rating,
           user_id: user_id,
           article_id: article_id
         })
           .then(res => {
-            console.log(res, "크레이트 결과~");
+            console.log(res);
             return res;
           })
           .catch(err => console.log(err));
