@@ -22,7 +22,8 @@
     "config_id": "production",
     "app_name": "helloWriter_Product",
     "app_desc": "helloWriter's DB_Product",
-    "node_port": 3306,
-    "database": "Hello_Writer_DB_Product"
+    "node_port": 5000,
+    "db_port": 3306,
+    "database": "Hello_Writer_DB_Product_DB_Dev"
   }
 }

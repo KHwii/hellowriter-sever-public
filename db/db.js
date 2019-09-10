@@ -9,7 +9,7 @@ const sequelize = new Sequelize(
   secret.DB_PASSWORD,
   {
     host: secret.DB_HOST,
-    logging: true,
+    logging: console.log,
     dialect: "mysql",
     timezone: "+09:00",
     // sync: { force: true },

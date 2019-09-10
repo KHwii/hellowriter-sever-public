@@ -8,9 +8,9 @@ const { userLogging } = require("./middleware");
 const app = express();
 module.exports.app = app;
 
-process.env.NODE_ENV = "development";
+// process.env.NODE_ENV = "development";
 // 배포하기 전에 다음 주석을 풀어주세요
-// process.env.NODE_ENV = 'production';
+process.env.NODE_ENV = "production";
 
 // 아래 require를 통해 글로벌객체에 global.gconfig 으로 사용할 수 있는 전역정보가 등록 됩니다.
 require("./config/config.js");
@@ -35,7 +35,6 @@ app.use(
 app.use(userLogging);
 app.listen(app.get("port"));
 console.log("Listening on", app.get("port"));
-
 
 const router = require("./routes.js");
 
