@@ -191,6 +191,9 @@ module.exports = {
     async getArticleRandom(req, res) {
       try {
         const result = await models.articles.getArticleRandom(req.body);
+        if (result === 0) {
+          res.status(200).send({ success: "NULL" });
+        }
         res.status(200).send(result);
       } catch (error) {
         res.status(400).send(error);
