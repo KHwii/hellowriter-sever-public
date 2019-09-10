@@ -14,10 +14,6 @@ const Articles = sequelize.define("articles", {
   user_id: {
     type: Sequelize.INTEGER,
     allowNULL: false,
-    model: "users",
-    key: "id",
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE"
   },
   topic_text: {
     type: Sequelize.STRING,
@@ -60,11 +56,5 @@ const Articles = sequelize.define("articles", {
     allowNULL: true
   }
 });
-Articles.associate = function(models) {
-  models.Articles.hasOne(models.Users, {
-    foreignKey: "id",
-    onDelete: "cascade"
-  });
-};
 Articles.sync();
 module.exports.Articles = Articles;
